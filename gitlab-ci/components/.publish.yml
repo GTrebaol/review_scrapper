@@ -1,0 +1,38 @@
+# Publish component
+
+###########
+# Publish #
+###########
+
+.publish:
+  stage: publish 🚀
+  rules:
+    - when: manual
+      allow_failure: true
+
+#####################
+# Publish Appaloosa #
+#####################
+
+.publish_appaloosa:
+  extends: .publish
+  variables:
+    BITRISE_WORKFLOW: publish_appaloosa
+
+######################
+# Publish Play Store #
+######################
+
+.publish_play_store:
+  extends: .publish
+  variables:
+    BITRISE_WORKFLOW: publish_play_store
+
+#####################
+# Publish App Store #
+#####################
+
+.publish_app_store:
+  extends: .publish
+  variables:
+    BITRISE_WORKFLOW: publish_app_store

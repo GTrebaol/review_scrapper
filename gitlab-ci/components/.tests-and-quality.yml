@@ -1,0 +1,10 @@
+# Tests and quality component
+
+###########
+# Quality #
+###########
+
+.quality_sonarqube:
+  stage: tests_and_quality ✅
+  variables:
+    BITRISE_WORKFLOW: quality_sonarqube

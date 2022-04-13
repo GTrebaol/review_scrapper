@@ -1,0 +1,12 @@
+# Gitrise component
+
+###########
+# Gitrise #
+###########
+
+.gitrise:
+  image: docker-registry.s.arkea.com/ccwm/gitrise:latest
+  script:
+    - gitrise --stream -a "$BITRISE_USER_TOKEN" -s "$BITRISE_APP_SLUG" -b "$CI_COMMIT_REF_NAME" -w "$BITRISE_WORKFLOW" -e "$BITRISE_VARS"
+  tags:
+    - bitrise

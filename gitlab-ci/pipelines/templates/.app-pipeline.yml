@@ -1,0 +1,83 @@
+# Template of an application
+
+include:
+  - local: "/gitlab-ci/components/.gitrise.yml"
+  - local: "/gitlab-ci/components/.publish.yml"
+  - local: "/gitlab-ci/components/.tests-and-quality.yml"
+
+stages:
+  - tests_and_quality ✅
+  - publish 🚀
+
+#####################
+# Build and Quality #
+#####################
+
+quality_sonarqube:
+  extends:
+    - .gitrise
+    - .quality_sonarqube
+
+#####################
+# Publish Appaloosa #
+#####################
+
+.publish_appaloosa:REC:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:REC
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: always
+    - when: manual
+      allow_failure: true
+
+.publish_appaloosa:NREG:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:PROD
+  rules:
+    - if: $CI_COMMIT_BRANCH == "release"
+      when: always
+    - when: manual
+      allow_failure: true
+
+.publish_appaloosa:HML:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:PROD
+
+.publish_appaloosa:PROD:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:PROD
+
+#####################
+# Publish App Store #
+#####################
+
+.publish_app_store:PROD:
+  extends:
+    - .gitrise
+    - .publish_app_store
+  variables:
+    BITRISE_VARS: ENV:PROD
+
+######################
+# Publish Play Store #
+######################
+
+.publish_play_store:PROD:
+  extends:
+    - .gitrise
+    - .publish_play_store
+  variables:
+    BITRISE_VARS: ENV:PROD

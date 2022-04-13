@@ -1,0 +1,27 @@
+# Implementation of an android application
+
+include:
+  - local: "/gitlab-ci/pipelines/templates/.app-pipeline.yml"
+
+#####################
+# Publish Appaloosa #
+#####################
+
+publish_appaloosa:REC:
+  extends: .publish_appaloosa:REC
+
+publish_appaloosa:HML:
+  extends: .publish_appaloosa:HML
+
+publish_appaloosa:NREG:
+  extends: .publish_appaloosa:NREG
+
+publish_appaloosa:PROD:
+  extends: .publish_appaloosa:PROD
+
+######################
+# Publish Play Store #
+######################
+
+publish_play_store:PROD:
+  extends: .publish_play_store:PROD
