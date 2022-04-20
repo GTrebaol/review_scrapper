@@ -1,0 +1,86 @@
+# Template of an application
+
+include:
+  # Components
+  - local: "/gitlab-ci/components/.docker.yml"
+  - local: "/gitlab-ci/components/.publish.yml"
+  - local: "/gitlab-ci/components/.build.yml"
+
+stages:
+  - build 🛠️
+  - quality ✅
+  - publish 🚀
+
+####################
+# Job to implement #
+####################
+
+# Build an application
+build:
+  extends:
+    - .gitrise
+    - .build
+  variables:
+    BITRISE_VARS: ENV:REC
+
+#################
+# Job to extend #
+#################
+
+# Publish an application on Appaloosa in REC environment
+.publish_appaloosa_rec:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:REC
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: always
+    - when: manual
+      allow_failure: true # Allows to display the status OK even if the stage publish is not executed
+
+# Publish an application on Appaloosa in NREG environment
+.publish_appaloosa_nreg:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:NRG
+  rules:
+    - if: $CI_COMMIT_BRANCH == "release"
+      when: always
+    - when: manual
+      allow_failure: true # Allows to display the status OK even if the stage publish is not executed
+
+# Publish an application on Appaloosa in HML environment
+.publish_appaloosa_hml:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:HML
+
+# Publish an application on Appaloosa in PROD environment
+.publish_appaloosa_prod:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:PROD
+
+# Publish an application on the App Store in PROD environment
+.publish_app_store_prod:
+  extends:
+    - .gitrise
+    - .publish_app_store
+  variables:
+    BITRISE_VARS: ENV:PROD
+
+# Publish an application on the Play Store in PROD environment
+.publish_play_store_prod:
+  extends:
+    - .gitrise
+    - .publish_play_store
+  variables:
+    BITRISE_VARS: ENV:PROD

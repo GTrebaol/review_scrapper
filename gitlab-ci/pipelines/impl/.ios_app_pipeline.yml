@@ -1,0 +1,28 @@
+# Implementation of an ios application
+
+include:
+  # Template
+  - local: "/gitlab-ci/pipelines/templates/.app_pipeline.yml"
+
+####################
+# Job to implement #
+####################
+
+# Publish Appaloosa
+
+publish_appaloosa_rec:
+  extends: .publish_appaloosa_rec
+
+publish_appaloosa_hml:
+  extends: .publish_appaloosa_hml
+
+publish_appaloosa_nreg:
+  extends: .publish_appaloosa_nreg
+
+publish_appaloosa_prod:
+  extends: .publish_appaloosa_prod
+
+# Publish App Store
+
+publish_app_store_prod:
+  extends: .publish_app_store_prod

@@ -1,0 +1,29 @@
+# Docker component
+
+default:
+  tags:
+    - bitrise
+
+#################
+# Job to extend #
+#################
+
+# Load the Gitrise docker image
+.gitrise:
+  image: docker-registry.s.arkea.com/ccwm/gitrise:latest
+  script:
+    # TODO: change POC_BITRISE_APP_SLUG in BITRISE_APP_SLUG
+    - gitrise --stream -a "$BITRISE_USER_TOKEN" -s "$POC_BITRISE_APP_SLUG" -b "$CI_COMMIT_REF_NAME" -w "$BITRISE_WORKFLOW" -e "$BITRISE_VARS"
+
+# Load the Gitrise docker image with the artifacts download option
+.gitrise_download_artifacts:
+  image: docker-registry.s.arkea.com/ccwm/gitrise:latest
+  script:
+    # TODO: change POC_BITRISE_APP_SLUG in BITRISE_APP_SLUG
+    - gitrise --stream -a "$BITRISE_USER_TOKEN" -s "$POC_BITRISE_APP_SLUG" -b "$CI_COMMIT_REF_NAME" -w "$BITRISE_WORKFLOW" -e "$BITRISE_VARS" -o "$BITRISE_ARTIFACTS_OUTPUT_DIR"
+
+# Load the Sonar docker image
+.sonarsource:
+  image: docker-registry.s.arkea.com/sonarsource/sonar-scanner-cli
+  script:
+    - sonar-scanner
