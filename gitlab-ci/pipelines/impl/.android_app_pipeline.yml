@@ -1,0 +1,54 @@
+# Implementation of an android application
+
+include:
+  # Template
+  - local: "/gitlab-ci/pipelines/templates/.app_pipeline.yml"
+
+####################
+# Job to implement #
+####################
+
+# Build an application
+build:
+  extends:
+    - .gitrise
+    - .build
+  variables:
+    BITRISE_VARS: ENV:REC
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - when: never
+
+# Pass the quality of an application on GitLab
+quality:
+  extends:
+    - .grandroid
+    - .quality_gitlab
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - when: never
+
+# Publish an application on Appaloosa in REC environment
+publish_appaloosa_rec:
+  extends: .publish_appaloosa_rec
+
+# Publish an application on Appaloosa in NRG environment
+publish_appaloosa_nrg:
+  extends: .publish_appaloosa_nrg
+
+# Publish an application on Appaloosa in internal HML environment
+publish_appaloosa_hml_internal:
+  extends: .publish_appaloosa_hml_internal
+
+# Publish an application on Appaloosa in external HML environment
+publish_appaloosa_hml_external:
+  extends: .publish_appaloosa_hml_external
+  needs: ["publish_appaloosa_hml_internal"]
+
+# Publish a PROD application on Appaloosa
+publish_appaloosa_prod:
+  extends: .publish_appaloosa_prod
+
+# Publish a PROD application on the Play Store
+publish_play_store_prod:
+  extends: .publish_play_store_prod

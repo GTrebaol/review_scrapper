@@ -1,0 +1,11 @@
+# Build component
+
+#################
+# Job to extend #
+#################
+
+# Build an application
+.build:
+  stage: build 🛠️
+  variables:
+    BITRISE_WORKFLOW: build

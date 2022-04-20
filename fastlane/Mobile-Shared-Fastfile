@@ -1,0 +1,90 @@
+require 'json'
+
+  ############################
+  # Google Chat Notification #
+  ############################
+
+desc "Send a notification in Google Chat for a core-apps publication."
+desc "Param title Title of the notification"
+desc "Param image_url Image of the application"
+desc "Param branch Branch deployed"
+desc "Param version Version deployed"
+desc "Param useful_links Links related to the deploy"
+desc "Param button_title Title of the button at the botton of the notification"
+desc "Param button_url The URL associated to the button at the botton of the notification"
+desc "Param thread Google Chat thread"
+desc "Param webhook_url The Google Chat Webhook URL"
+private_lane :core_apps_notify_publication do |options|
+  title = options[:title]
+  image_url = options[:image_url]
+  branch = options[:branch]
+  version = options[:version]
+  useful_links = options[:useful_links]
+  button_title = options[:button_title]
+  button_url = options[:button_url]
+  thread = options[:thread]
+  webhook_url = options[:webhook_url]
+  json = {
+    "cards" => [
+      {
+        "header" => {
+          "title" => title,
+          "imageUrl" => image_url
+        },
+        "sections" => [
+          {
+            "widgets" => [
+              {
+                "keyValue" => {
+                  "topLabel" => "Branche",
+                  "content" => branch,
+                }
+              },
+              {
+                "keyValue" => {
+                  "topLabel" => "Version",
+                  "content" => version
+                }
+              }
+            ]
+          },
+          {
+            "widgets" => [
+              {
+                "keyValue" => {
+                  "topLabel" => "Liens utiles",
+                  "content" => useful_links,
+                }
+              }
+            ]
+          },
+          {
+            "widgets" => [
+              {
+                "buttons" => [
+                  {
+                    "textButton" => {
+                      "text" => button_title,
+                      "onClick" => {
+                        "openLink" => {
+                          "url" => button_url
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "thread" => {
+      "name" => thread
+    }
+  }
+
+  puts json.to_json
+
+  sh "set -e && curl -H 'Content-Type: application/json' -X POST '#{webhook_url}' --data '#{json.to_json}'"
+end
