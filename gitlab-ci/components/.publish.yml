@@ -27,3 +27,10 @@
   extends: .publish
   variables:
     BITRISE_WORKFLOW: publish_app_store
+
+# Publish an iOS application on the App Store 
+.publish_artifactory:
+  extends: .publish
+  variables:
+    BITRISE_WORKFLOW: publish_artifactory
+
