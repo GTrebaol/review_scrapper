@@ -1,0 +1,18 @@
+# Android module implementation
+
+include:
+  # Template
+  - local: "/gitlab-ci/pipelines/templates/.module_pipeline.yml"
+
+####################
+# Implemented jobs #
+####################
+
+publish_artifactory_dev:
+  extends: .publish_artifactory_dev
+
+publish_artifactory_rc:
+  extends: .publish_artifactory_rc
+
+publish_artifactory_rel:
+  extends: .publish_artifactory_rel
