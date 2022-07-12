@@ -89,7 +89,7 @@ platform :android do
         publish_version = "#{VERSION_NAME}"
 
         if git_tag_exists(tag: publish_version)
-        UI.error("Found existing tag #{publish_version}") && exit(1)
+            UI.error("Found existing tag #{publish_version}") && exit(1)
         end
         add_git_tag(tag: publish_version)
         sh "set -e && git push --tags -o ci.skip https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH']
