@@ -3,8 +3,8 @@ default_platform(:android)
 MODULE= ENV["MODULE"]
 SUFFIX = ENV["TYPE"]
 
-OLD_VERSION_NAME=""
-VERSION_NAME=""
+OLD_VERSION_NAME="_"
+VERSION_NAME="_"
 
 platform :android do
 
@@ -22,16 +22,16 @@ platform :android do
 
     desc "Publish module..."
     lane :publish do
-        if SUFFIX =! "rel"
-            set_suffix
-        end
+        #if SUFFIX =! "rel"
+        set_suffix
+        #end
         # TODO Replace Template by build variant
         #gradle(tasks: "publishLibPublicationToArtifactory_bitriseRepository --stacktrace")
         create_tag
     end
 
     desc "Read the version code in the gradle.properties file."
-    private_lane :read_version_name do
+    lane :read_version_name do
       result = false
       begin
         file = File.new("../#{MODULE}/build.gradle.kts", "r")
@@ -50,24 +50,26 @@ platform :android do
       puts "VALUE : #{VERSION_NAME}"
     end
 
-    private_lane :write_version_name do
+    lane :write_version_name do
         file = File.read("../#{MODULE}/build.gradle.kts")
         new_content = file.gsub(OLD_VERSION_NAME, VERSION_NAME)
         File.open("../#{MODULE}/build.gradle.kts", "w") {|file| file.puts new_content }
     end
     
-    private_lane :set_suffix do
+    lane :set_suffix do
         read_version_name
 
         OLD_VERSION_NAME = VERSION_NAME
         last_tag = last_git_tag(pattern: "*-#{SUFFIX}*")
         puts ("Last tag : #{last_tag}")
 
-        if last_tag.include? OLD_VERSION_NAME
+        if last_tag.nil?
+            new_tag_digit = "1"
+            puts ("Not Found OLD_VERSION_NAME, new tag is 1")
+        else
             # get last digit from tag TYPE and increment ++
             new_tag_digit = last_tag.scan(/\d+/).last.to_i + 1
-        else
-            new_tag_digit = "1"
+            puts ("Found OLD_VERSION_NAME, new tag is #{new_tag_digit}")
         end
         
         
@@ -85,7 +87,7 @@ platform :android do
             ]
         )
 
-        read_version_name
+        set_suffix
         publish_version = "#{VERSION_NAME}"
 
         if git_tag_exists(tag: publish_version)
@@ -95,4 +97,3 @@ platform :android do
         sh "set -e && git push --tags -o ci.skip https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH']
     end
 end
-
