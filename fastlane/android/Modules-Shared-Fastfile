@@ -87,7 +87,6 @@ platform :android do
             ]
         )
 
-        set_suffix
         publish_version = "#{VERSION_NAME}"
 
         if git_tag_exists(tag: publish_version)
