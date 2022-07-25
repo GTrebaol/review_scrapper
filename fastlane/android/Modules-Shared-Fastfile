@@ -26,7 +26,9 @@ platform :android do
             set_suffix
         end
         # TODO Replace Template by build variant
-        gradle(tasks: "publishLibPublicationToArtifactory_bitriseRepository --stacktrace")
+        gradle(
+            tasks: ["assemble", "publishLibPublicationToArtifactory_bitriseRepository"]
+        )
         create_tag
     end
 
