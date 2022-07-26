@@ -58,6 +58,7 @@ platform :android do
     end
     
     lane :set_suffix do
+        sh('git fetch --tags')
         read_version_name
 
         OLD_VERSION_NAME = VERSION_NAME
@@ -80,7 +81,6 @@ platform :android do
     end
 
     lane :create_tag do
-        sh('git fetch --tags')
         # Reset gradle.properties update by CI.
         reset_git_repo(
             force: true,
