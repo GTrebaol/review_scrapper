@@ -8,6 +8,26 @@ include:
 # Implemented jobs #
 ####################
 
+# Build an application
+build:
+  extends:
+    - .gitrise
+    - .build
+  variables:
+    BITRISE_VARS: TYPE:DEV
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - when: never
+
+# Pass the quality of an application on GitLab
+quality:
+  extends:
+    - .grandroid
+    - .quality_gitlab
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - when: never
+
 publish_artifactory_dev:
   extends: .publish_artifactory_dev
 

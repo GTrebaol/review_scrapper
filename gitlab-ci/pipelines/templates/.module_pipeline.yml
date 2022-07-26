@@ -11,18 +11,6 @@ stages:
   - quality ✅
   - publish 🚀
 
-####################
-# Job to implement #
-####################
-
-# Build an application
-build:
-  extends:
-    - .gitrise
-    - .build
-  variables:
-    BITRISE_VARS: TYPE:DEV
-
 #################
 # Job to extend #
 #################
