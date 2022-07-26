@@ -14,7 +14,7 @@ The docker component provides docker images for the CI/CD of applications.
 ```yml
 include:
   - project: "opsdev/0e08/mobile-indus"
-    file: "/gitlab-ci/components/.docker.yml"
+    file: "/gitlab-ci/components/technical/.docker.yml"
 
 stages:
   - build
