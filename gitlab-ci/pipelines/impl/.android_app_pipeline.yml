@@ -23,7 +23,11 @@ build:
 quality:
   extends:
     - .grandroid
-    - .quality_gitlab
+    - .quality
+  before_script:
+    - bundle install
+  script:
+    - echo TODO
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - when: never

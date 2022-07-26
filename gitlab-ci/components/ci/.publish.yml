@@ -4,9 +4,11 @@
 # Job to extend #
 #################
 
-# Publish an application
 .publish:
   stage: publish 🚀
+  rules:
+    - when: manual
+      allow_failure: true # Allows to display the status OK even if the stage publish is not executed
 
 # Publish an application on Appaloosa
 .publish_appaloosa:
@@ -20,8 +22,15 @@
   variables:
     BITRISE_WORKFLOW: publish_play_store
 
-# Publish an iOS application on the App Store
+# Publish an iOS application on the App Store 
 .publish_app_store:
   extends: .publish
   variables:
     BITRISE_WORKFLOW: publish_app_store
+
+# Publish an iOS application on the App Store 
+.publish_artifactory:
+  extends: .publish
+  variables:
+    BITRISE_WORKFLOW: publish_artifactory
+

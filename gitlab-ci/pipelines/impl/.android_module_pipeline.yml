@@ -1,0 +1,45 @@
+# Android module implementation
+
+include:
+  # Template
+  - local: "/gitlab-ci/pipelines/templates/.module_pipeline.yml"
+
+####################
+# Implemented jobs #
+####################
+
+# Build an application
+build:
+  extends:
+    - .gitrise
+    - .build
+  variables:
+    BITRISE_VARS: TYPE:DEV
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+      when: manual
+      allow_failure: true
+    - when: never
+
+# Pass the quality of an application on GitLab
+quality:
+  extends:
+    - .quality
+    - .grandroid
+    - .sonar_gradle
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+      when: manual
+      allow_failure: true
+    - when: never
+
+publish_artifactory_dev:
+  extends: .publish_artifactory_dev
+
+publish_artifactory_rc:
+  extends: .publish_artifactory_rc
+
+publish_artifactory_rel:
+  extends: .publish_artifactory_rel

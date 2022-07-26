@@ -9,3 +9,4 @@
   stage: build 🛠️
   variables:
     BITRISE_WORKFLOW: build
+
