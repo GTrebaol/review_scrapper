@@ -1,0 +1,43 @@
+# Composant de pipeline Gradle
+variables:
+  # Arguments passés à la JVM par le client Gradle
+  #  -Dorg.gradle.daemon=true :             Pour qu'un daemon Gradle reste allumé, pour ne pas avoir à recréer une instance à chaque fois
+  #  -Dorg.gradle.jvmargs=-Xmx2048M :       On augmente la mémoire de la JVM
+  #  -Dorg.gradle.parallel=true :           On autorise la mise en parallèle des projets qui peuvent l'être
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2048M"
+  # Image contenant le JDK pour Gradle
+  JDK_IMAGE: docker-registry.s.arkea.com/domi/grandroid:master
+  # Username par défaut à utiliser lors d'un publish sur le nexus
+  NEXUS_USERNAME: hudson
+  # Password par défaut à utiliser lors d'un publish sur le nexus
+  NEXUS_PASSWORD: hudson
+  # URL du SONAR
+  SONAR_URL: http://sonarqube-ic.intra.arkea.com:8080
+  # Nom du module, obligatoire pour build sans le projet de démo
+  MODULE_NAME: ""
+
+# TODO ignoreFailures=false not working
+.sonar_gradle:
+  script:
+    - mkdir -p .gradle && cp /root/.gradle/gradle.properties .gradle/
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - export CODE_BOITE=$(echo $CI_PROJECT_NAMESPACE | cut -d '/' -f2)
+    - export PROJECT_KEY=${CODE_BOITE}_${CI_PROJECT_NAME}
+    - ./gradlew sonarqube
+      -Dtest.ignoreFailures=false
+      -Dsonar.host.url=$SONAR_URL
+      -Dsonar.projectName=$PROJECT_KEY
+      -Dsonar.projectKey=$PROJECT_KEY
+  after_script:
+    - find . -type d -path "**/src/main/kotlin" -print | grep -v "demo\|buildSrc"
+    - srcPath=`find . -type d -path "**/src/main/kotlin" -print | grep -v "demo\|buildSrc"`
+    - python3 /opt/cover2cover.py ./build/jacoco/jacocoReport.xml $srcPath > coverage.xml
+    - python3 /opt/source2filename.py coverage.xml
+    - awk -F"," '{ nbLines += $8 + $9; nbConditions += $6 + $7; coveredLines += $9; uncoveredConditions += $6 ;coveredConditions += $7 } END { print "coverage =",((coveredConditions+coveredLines)/(nbConditions+nbLines))*100, "%" }' ./build/jacoco/jacocoReport.csv
+  artifacts:
+    paths:
+      - ./coverage.xml
+    reports:
+      cobertura: ./coverage.xml
+      junit:
+        - "**/build/test-results/**/TEST-*.xml"

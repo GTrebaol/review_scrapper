@@ -19,9 +19,9 @@
 .quality_gitlab:
   extends:
     - .quality
+  tags:
+    - sonarMobile
   script:
-    # TODO: add quality for android
-    - echo TODO
 
 # Scan and upload quality on Sonarqube (go/sonarqubeprd)
 .sonar_scanner:
