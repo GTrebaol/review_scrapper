@@ -26,8 +26,8 @@ build:
 quality:
   extends:
     - .grandroid
-    - .sonar_gradle
     - .quality_gitlab
+    - .sonar_gradle
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - if: '$CI_COMMIT_BRANCH'
