@@ -17,7 +17,7 @@ build:
     BITRISE_VARS: TYPE:DEV
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - when: never
+    - when: manual
 
 # Pass the quality of an application on GitLab
 quality:

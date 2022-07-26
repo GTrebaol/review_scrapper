@@ -61,7 +61,7 @@ platform :android do
         read_version_name
 
         OLD_VERSION_NAME = VERSION_NAME
-        last_tag = last_git_tag(pattern: "*-#{SUFFIX}*")
+        last_tag = llast_git_tag(pattern: "#{VERSION_NAME}-#{SUFFIX}*")
         puts ("Last tag : #{last_tag}")
 
         if last_tag.nil?
