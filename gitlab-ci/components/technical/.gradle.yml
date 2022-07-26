@@ -5,8 +5,6 @@ variables:
   #  -Dorg.gradle.jvmargs=-Xmx2048M :       On augmente la mémoire de la JVM
   #  -Dorg.gradle.parallel=true :           On autorise la mise en parallèle des projets qui peuvent l'être
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2048M"
-  # Image contenant le JDK pour Gradle
-  JDK_IMAGE: docker-registry.s.arkea.com/domi/grandroid:master
   # Username par défaut à utiliser lors d'un publish sur le nexus
   NEXUS_USERNAME: hudson
   # Password par défaut à utiliser lors d'un publish sur le nexus
