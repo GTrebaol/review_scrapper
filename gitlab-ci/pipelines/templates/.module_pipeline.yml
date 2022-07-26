@@ -3,7 +3,7 @@
 include:
   # Components
   - local: "/gitlab-ci/components/technical/.docker.yml"
-  - local: "/gitlab-ci/components/technical/gradle.yml"
+  - local: "/gitlab-ci/components/technical/.gradle.yml"
   - local: "/gitlab-ci/components/ci/.publish.yml"
   - local: "/gitlab-ci/components/ci/.build.yml"
   - local: "/gitlab-ci/components/ci/.quality.yml"
