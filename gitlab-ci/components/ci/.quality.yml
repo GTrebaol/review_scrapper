@@ -15,14 +15,6 @@
   variables:
     BITRISE_WORKFLOW: quality
 
-# Pass the quality of an application on GitLab
-.quality_gitlab:
-  extends:
-    - .quality
-  tags:
-    - sonarMobile
-  script:
-
 # Scan and upload quality on Sonarqube (go/sonarqubeprd)
 .sonar_scanner:
   stage: quality ✅

@@ -25,8 +25,8 @@ build:
 # Pass the quality of an application on GitLab
 quality:
   extends:
+    - .quality
     - .grandroid
-    - .quality_gitlab
     - .sonar_gradle
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
