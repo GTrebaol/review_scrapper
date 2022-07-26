@@ -21,9 +21,21 @@ default:
   script:
     # TODO: change POC_BITRISE_APP_SLUG in BITRISE_APP_SLUG
     - gitrise --stream -a "$BITRISE_USER_TOKEN" -s "$POC_BITRISE_APP_SLUG" -b "$CI_COMMIT_REF_NAME" -w "$BITRISE_WORKFLOW" -e "$BITRISE_VARS" -o "$BITRISE_ARTIFACTS_OUTPUT_DIR"
+  artifacts:
+    paths:
+      - $BITRISE_ARTIFACTS_OUTPUT_DIR/
 
 # Load the Sonar docker image
-.sonarsource:
+.sonar_scanner_cli:
   image: docker-registry.s.arkea.com/sonarsource/sonar-scanner-cli
   script:
     - sonar-scanner
+
+# Load the Grandroid docker image
+.grandroid:
+  image: docker-registry.s.arkea.com/domi/grandroid:master
+  tags:
+    - android
+    - sonar
+  before_script:
+    - bundle install
