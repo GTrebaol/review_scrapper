@@ -80,6 +80,7 @@ platform :android do
     end
 
     lane :create_tag do
+        sh('git fetch --tags')
         # Reset gradle.properties update by CI.
         reset_git_repo(
             force: true,
