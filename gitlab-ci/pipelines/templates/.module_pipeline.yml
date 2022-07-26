@@ -2,11 +2,11 @@
 
 include:
   # Components
-  - local: "/gitlab-ci/components/.docker.yml"
-  - local: "/gitlab-ci/components/.publish.yml"
-  - local: "/gitlab-ci/components/.build.yml"
-  - local: "/gitlab-ci/components/.quality.yml"
-  - local: "/gitlab-ci/components/.workflow.yml"
+  - local: "/gitlab-ci/components/technical/.docker.yml"
+  - local: "/gitlab-ci/components/ci/.publish.yml"
+  - local: "/gitlab-ci/components/ci/.build.yml"
+  - local: "/gitlab-ci/components/ci/.quality.yml"
+  - local: "/gitlab-ci/components/ci/.workflow.yml"
 
 stages:
   - build 🛠️
