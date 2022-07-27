@@ -21,10 +21,10 @@ variables:
 # Job to extend #
 #################
 
-.publish_appaloosa_feature:
+.publish:appaloosa:feature:
   extends:
     - .gitrise
-    - .publish_appaloosa
+    - .publish:appaloosa
   variables:
     BITRISE_VARS: ENV:FTR
   rules:
@@ -32,10 +32,10 @@ variables:
       allow_failure: true # Allows to display the status OK even if the stage publish is not executed
 
 # Publish an application on Appaloosa in REC environment
-.publish_appaloosa_rec:
+.publish:appaloosa:rec:
   extends:
     - .gitrise
-    - .publish_appaloosa
+    - .publish:appaloosa
   variables:
     BITRISE_VARS: ENV:REC
   rules:
@@ -46,10 +46,10 @@ variables:
     - when: manual
 
 # Publish an application on Appaloosa in NRG environment
-.publish_appaloosa_nrg:
+.publish:appaloosa:nrg:
   extends:
     - .gitrise
-    - .publish_appaloosa
+    - .publish:appaloosa
   variables:
     BITRISE_VARS: ENV:NRG
   rules:
@@ -60,10 +60,10 @@ variables:
     - when: never
 
 # Publish an application on Appaloosa in internal HML environment
-.publish_appaloosa_hml_internal:
+.publish:appaloosa:hml:internal:
   extends:
     - .gitrise
-    - .publish_appaloosa
+    - .publish:appaloosa
   variables:
     BITRISE_VARS: ENV:HML_INTERNAL
   rules:
@@ -74,10 +74,10 @@ variables:
     - when: never
 
 # Publish an application on Appaloosa in external HML environment
-.publish_appaloosa_hml_external:
+.publish:appaloosa:hml:external:
   extends:
     - .gitrise
-    - .publish_appaloosa
+    - .publish:appaloosa
   variables:
     BITRISE_VARS: ENV:HML_EXTERNAL
   rules:
@@ -86,10 +86,10 @@ variables:
     - when: never
 
 # Publish an application on the App Store in PROD environment
-.publish_app_store_hml_external:
+.publish:app-store:hml:external:
   extends:
     - .gitrise
-    - .publish_app_store
+    - .publish:app-store
   variables:
     BITRISE_VARS: ENV:HML_EXTERNAL
   rules:
@@ -98,10 +98,10 @@ variables:
     - when: never
 
 # Publish an application on Appaloosa in PROD environment
-.publish_appaloosa_prod:
+.publish:appaloosa:prod:
   extends:
     - .gitrise
-    - .publish_appaloosa
+    - .publish:appaloosa
   variables:
     BITRISE_VARS: ENV:PROD_INTERNAL
   rules:
@@ -110,10 +110,10 @@ variables:
     - when: manual
 
 # Publish an application on the App Store in PROD environment
-.publish_app_store_prod:
+.publish:app-store:prod:
   extends:
     - .gitrise
-    - .publish_app_store
+    - .publish:app-store
   variables:
     BITRISE_VARS: ENV:PROD
   rules:
@@ -122,10 +122,10 @@ variables:
     - when: manual
 
 # Publish an application on the Play Store in PROD environment
-.publish_play_store_prod:
+.publish:play-store:prod:
   extends:
     - .gitrise
-    - .publish_play_store
+    - .publish:play-store
   variables:
     BITRISE_VARS: ENV:PROD_EXTERNAL
   rules:

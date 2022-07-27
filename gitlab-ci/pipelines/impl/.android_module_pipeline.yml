@@ -35,14 +35,14 @@ quality:
       allow_failure: true
     - when: never
 
-publish_artifactory_ftr:
-  extends: .publish_artifactory_ftr
+publish:artifactory:ftr:
+  extends: .publish:artifactory:ftr
 
-publish_appaloosa_ftr:
-  extends: .publish_appaloosa_ftr
+publish:appaloosa:ftr:
+  extends: .publish:appaloosa:ftr
 
-publish_artifactory_rel:
-  extends: .publish_artifactory_rel
+publish:artifactory:rel:
+  extends: .publish:artifactory:rel
 
-publish_artifactory_fix:
-  extends: .publish_artifactory_fix
+publish:artifactory:fix:
+  extends: .publish:artifactory:fix
