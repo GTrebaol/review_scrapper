@@ -2,7 +2,7 @@
 
 include:
   # Template
-  - local: "/gitlab-ci/pipelines/templates/.module_pipeline.yml"
+  - local: "/gitlab-ci/pipelines/templates/.module-pipeline.yml"
 
 ####################
 # Job to implement #
