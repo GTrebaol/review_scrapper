@@ -8,6 +8,12 @@ include:
 # Implemented jobs #
 ####################
 
+# Verify the branch name
+check-branch-name:
+  extends:
+    - .gitrise
+    - .check-branch-name
+
 # Build an application
 build:
   extends:

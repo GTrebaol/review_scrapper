@@ -1,0 +1,17 @@
+# Pro-Process component
+
+#################
+# Job to extend #
+#################
+
+# Verify the branch name
+.check-branch-name:
+  stage: pre-process ⚙
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_COMMIT_REF_NAME =~ /^[a-zA-z]+-\d+(_[a-zA-z]*)*]?$/ || $CI_COMMIT_REF_NAME =~ /^tech/)'
+      when: never
+      allow_failure: false
+  script:
+    - echo $CI_COMMIT_REF_NAME
+    - echo -e "\033[1;91mWrong branch name, please rename it like this :\n\t- If it's linked to a Jira -> 'JIRA-XXX_desc' (where '_desc' is optional)\n\t- If it's a technical branch -> 'tech/xyz'"
+    - exit 1
