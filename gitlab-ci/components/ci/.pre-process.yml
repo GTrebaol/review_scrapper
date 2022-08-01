@@ -10,6 +10,7 @@
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_COMMIT_REF_NAME =~ /^[a-zA-z]+-\d+(_[a-zA-z]*)*]?$/ || $CI_COMMIT_REF_NAME =~ /^tech/)'
       when: never
+    - when: always
       allow_failure: false
   script:
     - echo $CI_COMMIT_REF_NAME
