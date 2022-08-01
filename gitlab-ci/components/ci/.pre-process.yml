@@ -8,7 +8,7 @@
 .check-branch-name:
   stage: pre-process ⚙
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_COMMIT_REF_NAME =~ /^[a-zA-z]+-\d+(_[a-zA-z]*)*]?$/ || $CI_COMMIT_REF_NAME =~ /^tech/)'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_COMMIT_REF_NAME =~ /^\w+-\d{1,4}(_\w+)*/ || $CI_COMMIT_REF_NAME =~ /^tech\/.*/)'
       when: never
     - when: always
       allow_failure: false
