@@ -1,3 +1,5 @@
+require 'json'
+
 default_platform(:android)
 
 MODULE= ENV["MODULE"]
