@@ -8,7 +8,7 @@
 .check-branch-name:
   stage: pre-process ⚙
   rules:
-    - if: '($CI_COMMIT_BRANCH =~ /^\w+-\d{1,4}(_\w+)*$/ || $CI_COMMIT_BRANCH =~ /^tech\/.*/) || $CI_COMMIT_BRANCH : "develop" || $CI_COMMIT_BRANCH : "release"'
+    - if: '($CI_COMMIT_BRANCH =~ /^\w+-\d{1,4}(_\w+)*$/ || $CI_COMMIT_BRANCH =~ /^tech\/.*/) || $CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "release"'
       when: never
     - when: always
       allow_failure: false
