@@ -41,11 +41,14 @@ quality:
       allow_failure: true
     - when: never
 
-publish_artifactory_dev:
-  extends: .publish_artifactory_dev
+publish_artifactory_ftr:
+  extends: .publish_artifactory_ftr
 
-publish_artifactory_rc:
-  extends: .publish_artifactory_rc
+publish_appaloosa_feature:
+  extends: .publish_appaloosa_feature
 
 publish_artifactory_rel:
   extends: .publish_artifactory_rel
+
+publish_artifactory_fix:
+  extends: .publish_artifactory_fix
