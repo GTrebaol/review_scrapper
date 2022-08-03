@@ -76,6 +76,7 @@ platform :android do
         read_version_code
         OLD_VERSION_CODE = VERSION_CODE.to_s
         VERSION_CODE = ENV['CI_PIPELINE_ID']
+        puts ("Test VERSION_CODE , should be CI_PIPELINE_ID - #{VERSION_CODE}")
         write_version_code
 
         # update VERSION_NAME
