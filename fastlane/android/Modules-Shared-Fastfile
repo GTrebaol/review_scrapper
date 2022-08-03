@@ -36,7 +36,7 @@ platform :android do
         generic_appaloosa_store_key = read_json(json_path: "/tmp/keys/appaloosa/generic_appaloosa_store_key.json")
         store_id = generic_appaloosa_store_key[:store_id]
         api_token = generic_appaloosa_store_key[:api_token]
-        binary_path = sh("find ../#{MODULE}/build/outputs/apk/release -name '*.apk'").sub("../", "./").delete("\n")
+        binary_path = sh("find ../#{MODULE}-appdemo/build/outputs/apk/release -name '*.apk'").sub("../", "./").delete("\n")
 
         appaloosa(
             binary: binary_path,
