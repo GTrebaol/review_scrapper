@@ -50,6 +50,7 @@ platform :android do
     lane :generate_suffix do
         read_module_version_name
         OLD_PUBLISH_VERSION = PUBLISH_VERSION
+        puts("Current SUFFIX is #{SUFFIX}")
         if SUFFIX == "fix"
             sh('git fetch --tags')
 
@@ -66,6 +67,7 @@ platform :android do
             end
             PUBLISH_VERSION = "#{PUBLISH_VERSION}-#{SUFFIX}#{new_tag_digit}"
         elsif SUFFIX == "ftr"
+            puts("ftr suffix found !")
             PUBLISH_VERSION = "#{PUBLISH_VERSION}-" + git_branch + "-SNAPSHOT"
         end
             
