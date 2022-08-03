@@ -74,7 +74,7 @@ platform :android do
     lane :update_appdemo_version do
         # update VERSION CODE
         read_version_code
-        OLD_VERSION_CODE = VERSION_CODE
+        OLD_VERSION_CODE = VERSION_CODE.to_s
         VERSION_CODE = ENV['CI_PIPELINE_ID']
         write_version_code
 
