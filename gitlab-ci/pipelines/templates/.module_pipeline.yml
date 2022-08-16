@@ -16,6 +16,15 @@ stages:
   - quality ✅
   - publish 🚀
 
+####################
+# Job to implement #
+####################
+
+# Check the branch name
+check-branch-name:
+  extends:
+    - .check-branch-name
+
 #################
 # Job to extend #
 #################
@@ -31,7 +40,7 @@ stages:
     - when: manual
 
 # Publish a module in demo-app on appaloosa
-.publish_appaloosa_feature:
+.publish_appaloosa_ftr:
   extends:
     - .gitrise
     - .publish_appaloosa

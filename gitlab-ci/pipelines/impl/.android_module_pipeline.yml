@@ -5,14 +5,8 @@ include:
   - local: "/gitlab-ci/pipelines/templates/.module_pipeline.yml"
 
 ####################
-# Implemented jobs #
+# Job to implement #
 ####################
-
-# Verify the branch name
-check-branch-name:
-  extends:
-    - .gitrise
-    - .check-branch-name
 
 # Build an application
 build:
@@ -44,8 +38,8 @@ quality:
 publish_artifactory_ftr:
   extends: .publish_artifactory_ftr
 
-publish_appaloosa_feature:
-  extends: .publish_appaloosa_feature
+publish_appaloosa_ftr:
+  extends: .publish_appaloosa_ftr
 
 publish_artifactory_rel:
   extends: .publish_artifactory_rel
