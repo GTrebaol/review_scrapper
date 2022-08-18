@@ -30,31 +30,31 @@ check-branch-name:
 #################
 
 # Publish a module feature on artifactory
-.publish_artifactory_ftr:
+.publish:artifactory:ftr:
   extends:
     - .gitrise
-    - .publish_artifactory
+    - .publish:artifactory
   variables:
     BITRISE_VARS: TYPE:FTR
   rules:
     - when: manual
 
 # Publish a module in demo-app on appaloosa
-.publish_appaloosa_ftr:
+.publish:appaloosa:ftr:
   extends:
     - .gitrise
-    - .publish_appaloosa
+    - .publish:appaloosa
   variables:
     BITRISE_VARS: TYPE:FTR
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' 
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - when: manual
 
-# Publish a module from develop in release state 
-.publish_artifactory_rel:
+# Publish a module from develop in release state
+.publish:artifactory:rel:
   extends:
     - .gitrise
-    - .publish_artifactory
+    - .publish:artifactory
   variables:
     BITRISE_VARS: TYPE:DEV
   rules:
@@ -62,11 +62,11 @@ check-branch-name:
       when: always
     - when: manual
 
-# Publish a module from develop in release state 
-.publish_artifactory_fix:
+# Publish a module from develop in release state
+.publish:artifactory:fix:
   extends:
     - .gitrise
-    - .publish_artifactory
+    - .publish:artifactory
   variables:
     BITRISE_VARS: TYPE:FIX
   rules:

@@ -42,22 +42,22 @@ sonar:
     - when: never
 
 # Publish an application on Appaloosa in REC environment
-publish_appaloosa_rec:
-  extends: .publish_appaloosa_rec
+publish:appaloosa:rec:
+  extends: .publish:appaloosa:rec
 
 # Publish an application on Appaloosa in NRG environment
-publish_appaloosa_nrg:
-  extends: .publish_appaloosa_nrg
+publish:appaloosa:nrg:
+  extends: .publish:appaloosa:nrg
 
 # Publish an application on Appaloosa in internal HML environment
-publish_appaloosa_hml_internal:
-  extends: .publish_appaloosa_hml_internal
+publish:appaloosa:hml:internal:
+  extends: .publish:appaloosa:hml:internal
 
 # Publish an application on the App Store in external HML environment
-publish_app_store_hml_external:
-  extends: .publish_app_store_hml_external
-  needs: ["publish_appaloosa_hml_internal"]
+publish:app-store:hml:external:
+  extends: .publish:app-store:hml:external
+  needs: ["publish:appaloosa:hml:internal"]
 
 # Publish a PROD application on the App Store
-publish_app_store_prod:
-  extends: .publish_app_store_prod
+publish:app-store:prod:
+  extends: .publish:app-store:prod

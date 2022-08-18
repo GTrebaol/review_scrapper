@@ -40,29 +40,31 @@ check-branch-name:
     - .check-branch-name
 
 # Publish Appaloosa
-publish_appaloosa_feature:
-  extends: .publish_appaloosa_feature
+publish:appaloosa:feature:
+  extends: .publish:appaloosa:feature
 
-publish_appaloosa_rec:
-  extends: .publish_appaloosa_rec
+
+# Publish an application on Appaloosa in REC environment
+publish:appaloosa:rec:
+  extends: .publish:appaloosa:rec
 
 # Publish an application on Appaloosa in NRG environment
-publish_appaloosa_nrg:
-  extends: .publish_appaloosa_nrg
+publish:appaloosa:nrg:
+  extends: .publish:appaloosa:nrg
 
 # Publish an application on Appaloosa in internal HML environment
-publish_appaloosa_hml_internal:
-  extends: .publish_appaloosa_hml_internal
+publish:appaloosa:hml:internal:
+  extends: .publish:appaloosa:hml:internal
 
 # Publish an application on Appaloosa in external HML environment
-publish_appaloosa_hml_external:
-  extends: .publish_appaloosa_hml_external
-  needs: ["publish_appaloosa_hml_internal"]
+publish:appaloosa:hml:external:
+  extends: .publish:appaloosa:hml:external
+  needs: ["publish:appaloosa:hml:internal"]
 
 # Publish a PROD application on Appaloosa
-publish_appaloosa_prod:
-  extends: .publish_appaloosa_prod
+publish:appaloosa:prod:
+  extends: .publish:appaloosa:prod
 
 # Publish a PROD application on the Play Store
-publish_play_store_prod:
-  extends: .publish_play_store_prod
+publish:play-store:prod:
+  extends: .publish:play-store:prod
