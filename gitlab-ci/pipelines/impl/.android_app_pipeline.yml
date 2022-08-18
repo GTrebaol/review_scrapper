@@ -33,6 +33,16 @@ quality:
     - when: never
 
 # Publish an application on Appaloosa in REC environment
+# Verify the branch name
+check-branch-name:
+  extends:
+    - .gitrise
+    - .check-branch-name
+
+# Publish Appaloosa
+publish_appaloosa_feature:
+  extends: .publish_appaloosa_feature
+
 publish_appaloosa_rec:
   extends: .publish_appaloosa_rec
 

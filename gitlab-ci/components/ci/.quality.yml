@@ -14,7 +14,3 @@
     - .quality
   variables:
     BITRISE_WORKFLOW: quality
-
-# Scan and upload quality on Sonarqube (go/sonarqubeprd)
-.sonar_scanner:
-  stage: quality ✅

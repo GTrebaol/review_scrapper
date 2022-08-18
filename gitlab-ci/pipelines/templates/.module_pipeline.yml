@@ -4,22 +4,54 @@ include:
   # Components
   - local: "/gitlab-ci/components/technical/.docker.yml"
   - local: "/gitlab-ci/components/technical/.gradle.yml"
+  - local: "/gitlab-ci/components/ci/.pre-process.yml"
   - local: "/gitlab-ci/components/ci/.publish.yml"
   - local: "/gitlab-ci/components/ci/.build.yml"
   - local: "/gitlab-ci/components/ci/.quality.yml"
   - local: "/gitlab-ci/components/ci/.workflow.yml"
 
 stages:
+  - pre-process ⚙
   - build 🛠️
   - quality ✅
   - publish 🚀
+
+####################
+# Job to implement #
+####################
+
+# Check the branch name
+check-branch-name:
+  extends:
+    - .check-branch-name
 
 #################
 # Job to extend #
 #################
 
-# Publish a module currently in develop state 
-.publish_artifactory_dev:
+# Publish a module feature on artifactory
+.publish_artifactory_ftr:
+  extends:
+    - .gitrise
+    - .publish_artifactory
+  variables:
+    BITRISE_VARS: TYPE:FTR
+  rules:
+    - when: manual
+
+# Publish a module in demo-app on appaloosa
+.publish_appaloosa_ftr:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: TYPE:FTR
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' 
+    - when: manual
+
+# Publish a module from develop in release state 
+.publish_artifactory_rel:
   extends:
     - .gitrise
     - .publish_artifactory
@@ -29,30 +61,13 @@ stages:
     - if: $CI_COMMIT_BRANCH == "develop"
       when: always
     - when: manual
-      allow_failure: true # Allows to display the status OK even if the stage publish is not executed
 
-# Publish a module currently in release_candidte state
-.publish_artifactory_rc:
+# Publish a module from develop in release state 
+.publish_artifactory_fix:
   extends:
     - .gitrise
     - .publish_artifactory
   variables:
-    BITRISE_VARS: TYPE:RC
+    BITRISE_VARS: TYPE:FIX
   rules:
-    - if: $CI_COMMIT_BRANCH == "release"
-      when: always
     - when: manual
-      allow_failure: true # Allows to display the status OK even if the stage publish is not executed
-
-# Publish a module currently in release_candidte state
-.publish_artifactory_rel:
-  extends:
-    - .gitrise
-    - .publish_artifactory
-  variables:
-    BITRISE_VARS: TYPE:REL
-  rules:
-    - if: $CI_COMMIT_BRANCH == "release"
-      when: always
-    - when: manual
-      allow_failure: true # Allows to display the status OK even if the stage publish is not executed

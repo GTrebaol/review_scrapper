@@ -3,6 +3,7 @@
 include:
   # Components
   - local: "/gitlab-ci/components/technical/.docker.yml"
+  - local: "/gitlab-ci/components/ci/.pre-process.yml"
   - local: "/gitlab-ci/components/ci/.publish.yml"
   - local: "/gitlab-ci/components/ci/.build.yml"
   - local: "/gitlab-ci/components/ci/.quality.yml"
@@ -19,6 +20,16 @@ variables:
 #################
 # Job to extend #
 #################
+
+.publish_appaloosa_feature:
+  extends:
+    - .gitrise
+    - .publish_appaloosa
+  variables:
+    BITRISE_VARS: ENV:FTR
+  rules:
+    - when: manual
+      allow_failure: true # Allows to display the status OK even if the stage publish is not executed
 
 # Publish an application on Appaloosa in REC environment
 .publish_appaloosa_rec:
