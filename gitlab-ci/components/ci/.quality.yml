@@ -9,7 +9,7 @@
   stage: quality ✅
 
 # Pass the quality of an application on Bitrise
-.quality_bitrise:
+.quality:bitrise:
   extends:
     - .quality
   variables:

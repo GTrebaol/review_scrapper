@@ -15,7 +15,7 @@ variables:
   MODULE_NAME: ""
 
 # TODO ignoreFailures=false not working
-.sonar_gradle:
+.sonar:gradle:
   script:
     - mkdir -p .gradle && cp /root/.gradle/gradle.properties .gradle/
     - export GRADLE_USER_HOME=`pwd`/.gradle

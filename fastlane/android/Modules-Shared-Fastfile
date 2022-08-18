@@ -36,7 +36,7 @@ platform :android do
         generic_appaloosa_store_key = read_json(json_path: "/tmp/keys/appaloosa/generic_appaloosa_store_key.json")
         store_id = generic_appaloosa_store_key[:store_id]
         api_token = generic_appaloosa_store_key[:api_token]
-        binary_path = sh("find ../#{MODULE}-appdemo/build/outputs/apk/release -name '*.apk'").sub("../", "./").delete("\n")
+        binary_path = sh("find ../**/**/outputs/apk -name '*.apk'").sub("../", "./").delete("\n")
 
         appaloosa(
             binary: binary_path,
@@ -94,7 +94,7 @@ platform :android do
     end
 
     lane :push_fix_version do
-        git_commit(path: "./#{MODULE}/build.gradle.kts", message: "Updata new fix version  #{VERSION_NAME}" + " [skip ci]")
+        git_commit(path: "./#{MODULE}/build.gradle.kts", message: "Update new fix version  #{VERSION_NAME}" + " [skip ci]")
         sh "set -e && git push https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH']
     end
 

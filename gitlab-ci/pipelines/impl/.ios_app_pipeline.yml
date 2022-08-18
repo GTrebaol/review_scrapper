@@ -22,8 +22,8 @@ build:
 # Pass the quality of an application on bitrise an download the generated reports on gitlab as artifacts
 quality:
   extends:
-    - .gitrise_download_artifacts
-    - .quality_bitrise
+    - .gitrise:download_artifacts
+    - .quality:bitrise
   variables:
     BITRISE_ARTIFACTS_OUTPUT_DIR: sonar-reports
     BITRISE_VARS: ENV:REC,BITRISE_ARTIFACTS_OUTPUT_DIR:$BITRISE_ARTIFACTS_OUTPUT_DIR
@@ -34,8 +34,8 @@ quality:
 # Execute sonar scanner to upload source code and reports on sonarqube server (go/sonarqubeprd)
 sonar:
   extends:
-    - .sonar_scanner_cli
-    - .sonar_scanner
+    - .sonar:scanner_cli
+    - .sonar:scanner
   needs: ["quality"]
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
