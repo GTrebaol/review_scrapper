@@ -5,7 +5,6 @@ default_platform(:android)
 MODULE= ENV["MODULE"]
 SUFFIX = ENV["TYPE"]
 
-OLD_PUBLISH_VERSION="_"
 PUBLISH_VERSION="_"
 OLD_VERSION_NAME="_"
 VERSION_NAME="_"
@@ -13,6 +12,10 @@ OLD_VERSION_CODE="_"
 VERSION_CODE="_"
 
 platform :android do
+
+    before_all do
+        read_version_name
+    end
 
     desc "Build module..."
     lane :build do
@@ -36,7 +39,7 @@ platform :android do
         generic_appaloosa_store_key = read_json(json_path: "/tmp/keys/appaloosa/generic_appaloosa_store_key.json")
         store_id = generic_appaloosa_store_key[:store_id]
         api_token = generic_appaloosa_store_key[:api_token]
-        binary_path = sh("find ../**/**/outputs/apk -name '*.apk'").sub("../", "./").delete("\n")
+        binary_path = sh("find ../**/**/outputs/apk/release/ -name '*.apk'").sub("../", "./").delete("\n")
 
         appaloosa(
             binary: binary_path,
@@ -48,13 +51,12 @@ platform :android do
     end
     
     lane :generate_suffix do
-        read_module_version_name
-        OLD_PUBLISH_VERSION = PUBLISH_VERSION
+        OLD_VERSION_NAME = VERSION_NAME
         puts("Current SUFFIX is #{SUFFIX}")
-        if SUFFIX == "fix"
+        if SUFFIX == "fix" || SUFFIX == "ftr"
             sh('git fetch --tags')
 
-            last_tag = last_git_tag(pattern: "#{PUBLISH_VERSION}-#{SUFFIX}*")
+            last_tag = last_git_tag(pattern: "#{VERSION_NAME}-*#{SUFFIX}*")
             puts ("Last tag : #{last_tag}")
 
             if last_tag.nil?
@@ -65,14 +67,18 @@ platform :android do
                 new_tag_digit = last_tag.scan(/\d+/).last.to_i + 1
                 puts ("Found OLD_VERSION_NAME, new tag is #{new_tag_digit}")
             end
-            PUBLISH_VERSION = "#{PUBLISH_VERSION}-#{SUFFIX}#{new_tag_digit}"
-        elsif SUFFIX == "ftr"
-            puts("ftr suffix found !")
-            PUBLISH_VERSION = "#{PUBLISH_VERSION}-" + git_branch + "-SNAPSHOT"
+            
+            if SUFFIX == "ftr"
+                PUBLISH_VERSION = "#{VERSION_NAME}-#{git_branch.gsub("/", "_")}-#{SUFFIX}#{new_tag_digit}"
+            else
+                PUBLISH_VERSION = "#{VERSION_NAME}-#{SUFFIX}#{new_tag_digit}"
+            end
+        else
+            PUBLISH_VERSION = "#{VERSION_NAME}"
         end
             
         puts ("New version : #{PUBLISH_VERSION}")
-        write_module_version_name
+        write_version_name
     end
     
     lane :update_appdemo_version do
@@ -82,15 +88,6 @@ platform :android do
         VERSION_CODE = ENV['BITRISE_BUILD_NUMBER']
         puts ("Test VERSION_CODE , should be BITRISE_BUILD_NUMBER - #{VERSION_CODE}")
         write_version_code
-
-        # update VERSION_NAME
-        read_version_name
-        OLD_VERSION_NAME = VERSION_NAME
-        if PUBLISH_VERSION == "_"
-            read_module_version_name
-        end
-        VERSION_NAME = PUBLISH_VERSION
-        write_version_name
     end
 
     lane :push_fix_version do
@@ -107,43 +104,16 @@ platform :android do
             ]
         )
 
-        if git_tag_exists(tag: PUBLISH_VERSION)
-            UI.error("Found existing tag #{PUBLISH_VERSION}") && exit(1)
+        if git_tag_exists(tag: VERSION_NAME)
+            UI.error("Found existing tag #{VERSION_NAME}") && exit(1)
         end
-        add_git_tag(tag: PUBLISH_VERSION)
+        add_git_tag(tag: VERSION_NAME)
         sh "set -e && git push --tags -o ci.skip https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH']
     end
 
     #################
     # Private lanes #
     #################
-
-    desc "Read the publish.version in the build.gradle.kts file."
-    private_lane :read_module_version_name do
-      result = false
-      begin
-        file = File.new("../#{MODULE}/build.gradle.kts", "r")
-        while (line = file.gets)
-          next unless line.include? 'project.version'
-          components = line.strip.split(' ')
-          result = components[components.length - 1].tr("\"", "")
-          break
-        end
-        file.close
-      rescue => err
-        UI.error("An exception occurred while reading gradle file: #{err}") && exit(1)
-        err
-      end
-      PUBLISH_VERSION = result
-      puts "VALUE : #{PUBLISH_VERSION}"
-    end
-
-    desc "Write the publish.version in the build.gradle.kts file."
-    private_lane :write_module_version_name do
-        file = File.read("../#{MODULE}/build.gradle.kts")
-        new_content = file.gsub(OLD_PUBLISH_VERSION, PUBLISH_VERSION)
-        File.open("../#{MODULE}/build.gradle.kts", "w") {|file| file.puts new_content }
-    end
 
     desc "Read the version code in the gradle.properties file."
     private_lane :read_version_code do
@@ -192,17 +162,17 @@ platform :android do
             err
         end
         VERSION_NAME = result
-        puts("Current VERSION_CODE is #{VERSION_NAME}")
+        puts("Current VERSION_NAME is #{VERSION_NAME}")
     end
 
     desc "Write the version name in the gradle.properties file."
     private_lane :write_version_name do
         file = File.read('../gradle.properties')
-        new_content = file.gsub(OLD_VERSION_NAME, VERSION_NAME)
+        new_content = file.gsub(OLD_VERSION_NAME, PUBLISH_VERSION)
         File.open("../gradle.properties", "w") { |file|
             file.puts new_content 
         }
-        puts("Updating old VERSION_CODE #{OLD_VERSION_NAME} to new one  #{VERSION_NAME}")
+        puts("Updating old VERSION_NAME #{OLD_VERSION_NAME} to new one #{PUBLISH_VERSION}")
     end
 
 end
