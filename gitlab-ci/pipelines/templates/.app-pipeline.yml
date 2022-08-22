@@ -1,0 +1,37 @@
+# Template of an application
+
+include:
+  # Components
+  - local: "/gitlab-ci/components/technical/.docker.yml"
+  - local: "/gitlab-ci/components/ci/.publish.yml"
+  - local: "/gitlab-ci/components/ci/.build.yml"
+  - local: "/gitlab-ci/components/ci/.workflow.yml"
+
+stages:
+  - build 🛠️
+  - publish 🚀
+
+##################
+# Job to extends #
+##################
+
+.build:app:
+  extends:
+    - .gitrise
+    - .build
+  variables:
+    BITRISE_VARS: "ENV:REC,APP:$APP"
+
+.publish:appaloosa:app:
+  extends:
+    - .gitrise
+    - .publish:appaloosa
+  variables:
+    BITRISE_VARS: "ENV:$ENV,APP:$APP,DELIVERY_TYPE:$DELIVERY_TYPE"
+
+.publish:play-store:app:
+  extends:
+    - .gitrise
+    - .publish:play-store
+  variables:
+    BITRISE_VARS: "ENV:$ENV,APP:$APP"
