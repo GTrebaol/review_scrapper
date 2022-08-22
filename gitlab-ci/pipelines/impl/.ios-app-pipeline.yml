@@ -1,0 +1,41 @@
+# Implementation of an ios application
+
+include:
+  # Template
+  - local: "/gitlab-ci/pipelines/templates/.app-pipeline.yml"
+
+####################
+# Job to implement #
+####################
+
+# Build an application
+build:
+  extends:
+    - .gitrise
+    - .build
+  variables:
+    BITRISE_VARS: ENV:REC
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - when: manual
+
+# Publish an application on Appaloosa in REC environment
+publish:appaloosa:rec:
+  extends: .publish:appaloosa:rec
+
+# Publish an application on Appaloosa in NRG environment
+publish:appaloosa:nrg:
+  extends: .publish:appaloosa:nrg
+
+# Publish an application on Appaloosa in internal HML environment
+publish:appaloosa:hml-internal:
+  extends: .publish:appaloosa:hml-internal
+
+# Publish an application on the App Store in external HML environment
+publish:app-store:hml-external:
+  extends: .publish:app-store:hml-external
+  needs: ["publish:appaloosa:hml-internal"]
+
+# Publish a PROD application on the App Store
+publish:app-store:prod:
+  extends: .publish:app-store:prod

@@ -6,31 +6,30 @@
 
 .publish:
   stage: publish 🚀
+  allow_failure: true # Allows to display the status OK even if the stage publish is not executed
   rules:
     - when: manual
-      allow_failure: true # Allows to display the status OK even if the stage publish is not executed
 
 # Publish an application on Appaloosa
 .publish:appaloosa:
   extends: .publish
   variables:
-    BITRISE_WORKFLOW: publish_appaloosa
+    BITRISE_WORKFLOW: publish:appaloosa
 
 # Publish an Android application on the Play Store
 .publish:play-store:
   extends: .publish
   variables:
-    BITRISE_WORKFLOW: publish_play_store
+    BITRISE_WORKFLOW: publish:play-store
 
-# Publish an iOS application on the App Store 
+# Publish an iOS application on the App Store
 .publish:app-store:
   extends: .publish
   variables:
-    BITRISE_WORKFLOW: publish_app_store
+    BITRISE_WORKFLOW: publish:app-store
 
-# Publish an iOS application on the App Store 
+# Publish an iOS application on the App Store
 .publish:artifactory:
   extends: .publish
   variables:
-    BITRISE_WORKFLOW: publish_artifactory
-
+    BITRISE_WORKFLOW: publish:artifactory
