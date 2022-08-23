@@ -8,15 +8,6 @@ include:
 # Job to implement #
 ####################
 
-# Build #
-
-build:
-  extends: .build:app
-  variables:
-    APP: AXA # Since apps are ISO, it is possible to choose anyone to build
-  rules:
-    - when: never
-
 # Appaloosa #
 
 publish:appaloosa:all:
@@ -26,6 +17,17 @@ publish:appaloosa:all:
   parallel:
     matrix:
       - ENV: ["FTR", "REC", "NRG", "HML_INTERNAL", "HML_EXTERNAL", "PROD"]
+  rules:
+    - if: '$ENV == "HML_INTERNAL"'
+      variables:
+        ENV: HML
+      when: manual
+    - if: '$ENV == "HML_EXTERNAL"'
+      variables:
+        ENV: HML
+        DELIVERY_TYPE: "EXTERNAL"
+      when: manual
+    - when: manual
 
 publish:appaloosa:axa:
   extends: .publish:appaloosa:app
@@ -34,6 +36,17 @@ publish:appaloosa:axa:
   parallel:
     matrix:
       - ENV: ["FTR", "REC", "HML_INTERNAL", "HML_EXTERNAL", "PROD"]
+  rules:
+    - if: '$ENV == "HML_INTERNAL"'
+      variables:
+        ENV: HML
+      when: manual
+    - if: '$ENV == "HML_EXTERNAL"'
+      variables:
+        ENV: HML
+        DELIVERY_TYPE: "EXTERNAL"
+      when: manual
+    - when: manual
 
 publish:appaloosa:azb:
   extends: .publish:appaloosa:app
@@ -41,7 +54,7 @@ publish:appaloosa:azb:
     APP: "AZB"
   parallel:
     matrix:
-      - ENV: ["FTR", "REC", "HML_INTERNAL", "HML_EXTERNAL", "PROD"]
+      - ENV: ["FTR", "REC", "HML", "PROD"]
 
 publish:appaloosa:bpe:
   extends: .publish:appaloosa:app
@@ -57,7 +70,7 @@ publish:appaloosa:ccf:
     APP: "CCF"
   parallel:
     matrix:
-      - ENV: ["FTR", "REC", "HML_INTERNAL", "HML_EXTERNAL", "PROD"]
+      - ENV: ["FTR", "REC", "HML", "PROD"]
 
 publish:appaloosa:cmb:
   extends: .publish:appaloosa:app

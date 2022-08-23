@@ -90,9 +90,17 @@ platform :android do
         write_version_code
     end
 
-    lane :push_fix_version do
-        git_commit(path: "./#{MODULE}/build.gradle.kts", message: "Update new fix version  #{VERSION_NAME}" + " [skip ci]")
-        sh "set -e && git push https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH']
+    lane :generate_release_notes_changelog_version do
+        sh "cp ~/.cache/fastlane/imported/mobile-indus.git/fastlane/android/ReleaseNote.rb ."
+        sh "cd .. ; ruby -r './fastlane/ReleaseNote.rb' -e 'ReleaseNote.new.mainModule'"
+        git_commit(path: "./RELEASE_NOTES.md", message: "Generate Release notes" + " [skip ci]")
+        git_commit(path: "./CHANGELOG.md", message: "Generate Changelog" + " [skip ci]")
+
+        if SUFFIX == "fix"
+            git_commit(path: "./gradle.properties", message: "Update new fix version  #{VERSION_NAME}" + " [skip ci]")
+        end
+
+        sh "set -e && git push -o ci.skip https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH']
     end
 
     lane :create_tag do
