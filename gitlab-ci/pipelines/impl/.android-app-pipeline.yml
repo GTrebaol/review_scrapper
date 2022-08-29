@@ -8,6 +8,11 @@ include:
 # Job to implement #
 ####################
 
+build:
+  extends: .build:app
+  variables:
+    APP: "ANY"
+
 # Appaloosa #
 
 publish:appaloosa:all:

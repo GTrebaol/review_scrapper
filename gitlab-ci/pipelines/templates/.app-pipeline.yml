@@ -9,20 +9,21 @@ include:
   - local: "/gitlab-ci/components/ci/.pre-process.yml"
 
 stages:
-  - pre-process ⚙
   - build 🛠️
   - publish 🚀
+
+variables:
+  APP: ""
 
   ####################
   # Job to implement #
   ####################
 
-build:
+.build:app:
   extends:
     - .gitrise
     - .build
   variables:
-    APP: AXA # Since apps are ISO in product, it is possible to choose anyone to build
     BITRISE_VARS: "ENV:REC,APP:$APP"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -47,3 +48,11 @@ build:
     - .publish:play-store
   variables:
     BITRISE_VARS: "ENV:$ENV,APP:$APP"
+
+.publish:app-store:app:
+  extends:
+    - .gitrise
+    - .publish:app-store
+  variables:
+    DELIVERY_TYPE: "EXTERNAL"
+    BITRISE_VARS: "ENV:$ENV,APP:$APP,DELIVERY_TYPE:$DELIVERY_TYPE"

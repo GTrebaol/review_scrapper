@@ -4,38 +4,51 @@ include:
   # Template
   - local: "/gitlab-ci/pipelines/templates/.app-pipeline.yml"
 
+variables:
+  B2B: "false"
+
+##################
+# Job to extends #
+##################
+
+.publish:appaloosa:b2b:
+  extends: .publish:appaloosa:app
+  parallel:
+    matrix:
+      - ENV: ["FTR", "REC", "HML_INTERNAL"]
+  rules:
+    - if: '$ENV == "HML_INTERNAL"'
+      variables:
+        ENV: HML
+      when: manual
+    - when: manual
+
+.publish:appaloosa:fedes:
+  extends: .publish:appaloosa:app
+  parallel:
+    matrix:
+      - ENV: ["FTR", "REC", "NRG"]
+  rules:
+    - when: manual
+
 ####################
 # Job to implement #
 ####################
 
-# Build an application
-build:
-  extends:
-    - .gitrise
-    - .build
-  variables:
-    BITRISE_VARS: ENV:REC
+.publish:app-store:b2b:
+  extends: .publish:app-store:app
+  parallel:
+    matrix:
+      - ENV: ["HML_EXTERNAL", "PROD"]
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$ENV == "HML_EXTERNAL"'
+      variables:
+        ENV: HML
+      when: manual
     - when: manual
 
-# Publish an application on Appaloosa in REC environment
-publish:appaloosa:rec:
-  extends: .publish:appaloosa:rec
-
-# Publish an application on Appaloosa in NRG environment
-publish:appaloosa:nrg:
-  extends: .publish:appaloosa:nrg
-
-# Publish an application on Appaloosa in internal HML environment
-publish:appaloosa:hml-internal:
-  extends: .publish:appaloosa:hml-internal
-
-# Publish an application on the App Store in external HML environment
-publish:app-store:hml-external:
-  extends: .publish:app-store:hml-external
-  needs: ["publish:appaloosa:hml-internal"]
-
-# Publish a PROD application on the App Store
-publish:app-store:prod:
-  extends: .publish:app-store:prod
+.publish:app-store:fedes:
+  extends: .publish:app-store:app
+  parallel:
+    matrix:
+      - ENV: ["PROD"]
