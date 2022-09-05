@@ -77,3 +77,35 @@ variables:
     BITRISE_VARS: TYPE:FIX
   rules:
     - when: manual
+
+# Publish a module feature on podspec repo
+.publish:podspec:ftr:
+  extends:
+    - .gitrise
+    - .publish:artifactory
+  variables:
+    BITRISE_VARS: TYPE:FTR
+  rules:
+    - when: manual
+
+# Publish a module from develop in release state
+.publish:podspec:rel:
+  extends:
+    - .gitrise
+    - .publish:artifactory
+  variables:
+    BITRISE_VARS: TYPE:REL
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: always
+    - when: manual
+
+# Publish a fix for a module
+.publish:podspec:fix:
+  extends:
+    - .gitrise
+    - .publish:artifactory
+  variables:
+    BITRISE_VARS: TYPE:FIX
+  rules:
+    - when: manual
