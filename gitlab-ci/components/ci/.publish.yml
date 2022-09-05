@@ -28,8 +28,14 @@
   variables:
     BITRISE_WORKFLOW: publish:app-store
 
-# Publish an iOS application on the App Store
+# Publish an Android module on Artifactory
 .publish:artifactory:
   extends: .publish
   variables:
     BITRISE_WORKFLOW: publish:artifactory
+
+# Publish an iOS module on podspec repo
+.publish:podspec:
+  extends: .publish
+  variables:
+    BITRISE_WORKFLOW: publish:podspec

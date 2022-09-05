@@ -4,9 +4,6 @@ include:
   # Template
   - local: "/gitlab-ci/pipelines/templates/.app-pipeline.yml"
 
-variables:
-  B2B: "false"
-
 ##################
 # Job to extends #
 ##################
