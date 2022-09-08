@@ -30,22 +30,14 @@ tests:
   variables:
     BITRISE_ARTIFACTS_OUTPUT_DIR: sonar-reports
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH'
-      when: manual
-      allow_failure: true
-    - when: never
+    - when: manual
 
 sonar:
   extends:
     - .quality
     - .sonar:cli
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH'
-      when: manual
-      allow_failure: true
-    - when: never
+    - when: manual
 
 publish:podspec:ftr:
   extends: .publish:podspec:ftr
