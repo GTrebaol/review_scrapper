@@ -53,7 +53,6 @@ variables:
   rules:
     - if: '$HAS_DEMO_APP == "false"'
       when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - when: manual
 
 # Publish a module from develop in release state
