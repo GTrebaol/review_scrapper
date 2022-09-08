@@ -70,6 +70,7 @@ platform :ios do
     # ...if not, creates and push the new tag
     create_tag
     # Push updated podspec
+    sh "ls -ll ~/.cocoapods/repos/"
     push_podspec
     
   end
@@ -92,8 +93,6 @@ platform :ios do
 
   desc "Push the podspec"
   lane :push_podspec do
-    sh "set -e && pod repo add arkea-bad-9057-ios-podspec-repo https://gitlark.s.arkea.com/BAD/9057/ios/common/ios-podspec-repo.git"
-    sh "set -e && pod repo add arkea-bad-9033-ios-podspec-repo https://gitlark.s.arkea.com/BAD/9033/ios-podspec-repo.git"
     # Loop over env var PODSPEC for several podspec files if needed (e.g. IosPhenixResources)
     ENV["PODSPEC"].split(",").map { |podspec|
       begin
