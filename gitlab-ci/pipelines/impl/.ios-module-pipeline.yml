@@ -31,6 +31,7 @@ tests:
     BITRISE_ARTIFACTS_OUTPUT_DIR: sonar-reports
   rules:
     - when: manual
+      allow_failure: true
 
 sonar:
   extends:
@@ -38,6 +39,7 @@ sonar:
     - .sonar:cli
   rules:
     - when: manual
+      allow_failure: true
 
 publish:podspec:ftr:
   extends: .publish:podspec:ftr
