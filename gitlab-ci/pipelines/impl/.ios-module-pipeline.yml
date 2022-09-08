@@ -52,3 +52,6 @@ publish:podspec:fix:
 
 publish:demo:appaloosa:
   extends: .publish:appaloosa:ftr
+  rules:
+    - when: manual
+      allow_failure: true
