@@ -92,7 +92,7 @@ variables:
 .publish:podspec:rel:
   extends:
     - .gitrise
-    - .publish:artifactory
+    - .publish:podspec
   variables:
     BITRISE_VARS: TYPE:REL
   rules:
