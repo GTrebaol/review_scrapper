@@ -10,6 +10,13 @@ NEW_VERSION = "_"
 SUFFIX = ENV["TYPE"]
 APP_NAME= ENV['SCHEME_DEMO']
 
+before_all do
+  cocoapods(
+      repo_update: false,
+      clean_install: true
+  )
+end
+
 platform :ios do
 
   desc "Installed needed provisioning profiles to build and deploy the application."
@@ -70,7 +77,6 @@ platform :ios do
     # ...if not, creates and push the new tag
     create_tag
     # Push updated podspec
-    sh "ls -ll ~/.cocoapods/repos/"
     push_podspec
     
   end
@@ -111,7 +117,7 @@ platform :ios do
       rescue => e
         puts e.class
         puts e.message
-        UI.error("Could not validate and publish podspec #{publish_version}") && exit(1)
+        UI.error("Could not validate and publish podspec #{VERSION}") && exit(1)
       end
 
     }
