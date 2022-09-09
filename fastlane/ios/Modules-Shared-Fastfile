@@ -60,7 +60,10 @@ platform :ios do
   end
 
   desc "Publish the podspec"
-  lane :publish do   
+  lane :publish do
+    # On souhaite enlever toute trace des hooks.
+    reset_git_repo(force: true)
+   
     # set suffix if dev | rel
     if SUFFIX != ""
       set_suffix

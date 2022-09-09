@@ -102,6 +102,7 @@ publish:play-store:axa:
   extends: .publish:play-store:app
   variables:
     APP: "AXA"
+    ENV: "PROD"
 
 publish:play-store:azb:
   extends: .publish:play-store:app

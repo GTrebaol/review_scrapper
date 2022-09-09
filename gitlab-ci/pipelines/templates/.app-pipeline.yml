@@ -47,7 +47,8 @@ variables:
     - .gitrise
     - .publish:play-store
   variables:
-    BITRISE_VARS: "ENV:$ENV,APP:$APP"
+    DELIVERY_TYPE: "EXTERNAL"
+    BITRISE_VARS: "ENV:$ENV,APP:$APP,DELIVERY_TYPE:$DELIVERY_TYPE"
 
 .publish:app-store:app:
   extends:
