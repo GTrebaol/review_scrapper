@@ -18,7 +18,7 @@ default:
 .gitrise:download-artifacts:
   image: docker-registry.s.arkea.com/ccwm/gitrise:latest
   script:
-    - gitrise -a "$BITRISE_USER_TOKEN" -s "$BITRISE_APP_SLUG" -w "$BITRISE_WORKFLOW" -b "$CI_COMMIT_REF_NAME" -c "$CI_COMMIT_SHA" --stream -p 5  -e "$BITRISE_VARS" -o "$BITRISE_ARTIFACTS_OUTPUT_DIR"
+    - gitrise -a "$BITRISE_USER_TOKEN" -s "$BITRISE_APP_SLUG" -w "$BITRISE_WORKFLOW" -b "$CI_COMMIT_REF_NAME" -c "$CI_COMMIT_SHA" --stream -p 10  -e "$BITRISE_VARS" -o "$BITRISE_ARTIFACTS_OUTPUT_DIR"
   artifacts:
     paths:
       - $BITRISE_ARTIFACTS_OUTPUT_DIR/
