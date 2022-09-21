@@ -36,6 +36,8 @@ variables:
     paths:
       - ./coverage.xml
     reports:
-      cobertura: ./coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: ./coverage.xml
       junit:
         - "**/build/test-results/**/TEST-*.xml"

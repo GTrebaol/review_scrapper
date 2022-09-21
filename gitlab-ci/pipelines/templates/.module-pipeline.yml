@@ -14,6 +14,7 @@ stages:
   - pre-process ⚙
   - build 🛠️
   - quality ✅
+  - sonar 📈
   - publish 🚀
 
 variables:
