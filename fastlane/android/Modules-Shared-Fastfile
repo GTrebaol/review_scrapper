@@ -100,7 +100,7 @@ platform :android do
             git_commit(path: "./gradle.properties", message: "Update new fix version  #{VERSION_NAME}" + " [skip ci]")
         end
 
-        sh "set -e && git push -o ci.skip https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH'] + " HEAD:" + ENV['BITRISE_GIT_BRANCH']
+        sh "set -e && git push -o ci.skip https://"+ ENV['KS501_WRITE_USERNAME'] + ":" + ENV['KS501_WRITE_TOKEN'] + "@gitlab-proxy.arkea.com/bitrise/" + ENV['PROJECT_PATH']
     end
 
     lane :create_tag do
