@@ -4,6 +4,9 @@ default:
   tags:
     - bitrise
 
+variables:
+  GRANDROID_SPECIFIC_RUNNER: ""
+
 #################
 # Job to extend #
 #################
@@ -35,5 +38,6 @@ default:
   tags:
     - android
     - sonar
+    - $GRANDROID_SPECIFIC_RUNNER
   before_script:
     - bundle install
