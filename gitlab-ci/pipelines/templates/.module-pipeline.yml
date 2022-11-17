@@ -82,7 +82,7 @@ variables:
 .publish:podspec:ftr:
   extends:
     - .gitrise
-    - .publish:artifactory
+    - .publish:podspec
   variables:
     BITRISE_VARS: TYPE:FTR
   rules:
@@ -104,7 +104,7 @@ variables:
 .publish:podspec:fix:
   extends:
     - .gitrise
-    - .publish:artifactory
+    - .publish:podspec
   variables:
     BITRISE_VARS: TYPE:FIX
   rules:
