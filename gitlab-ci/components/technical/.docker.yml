@@ -1,12 +1,5 @@
 # Docker component
 
-default:
-  tags:
-    - bitrise
-
-variables:
-  GRANDROID_SPECIFIC_RUNNER: ""
-
 #################
 # Job to extend #
 #################
@@ -35,9 +28,5 @@ variables:
 # Load the Grandroid docker image
 .grandroid:
   image: docker-registry.s.arkea.com/domi/grandroid:master
-  tags:
-    - android
-    - sonar
-    - $GRANDROID_SPECIFIC_RUNNER
   before_script:
     - bundle install

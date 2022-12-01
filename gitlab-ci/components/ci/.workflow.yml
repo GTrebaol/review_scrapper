@@ -1,5 +1,9 @@
 # Workflow component
 
+default:
+  tags:
+    - build
+
 # The workflow of application pipeline
 # If GitLab attempts to trigger:
 # A merge request pipeline, start the pipeline.
