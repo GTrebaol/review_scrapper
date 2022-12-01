@@ -6,7 +6,6 @@ include:
   - local: "/gitlab-ci/components/ci/.publish.yml"
   - local: "/gitlab-ci/components/ci/.build.yml"
   - local: "/gitlab-ci/components/ci/.workflow.yml"
-  - local: "/gitlab-ci/components/ci/.pre-process.yml"
 
 stages:
   - build 🛠️

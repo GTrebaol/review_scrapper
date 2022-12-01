@@ -1,5 +1,9 @@
 # Quality component
 
+default:
+  tags:
+    - build
+
 #################
 # Job to extend #
 #################

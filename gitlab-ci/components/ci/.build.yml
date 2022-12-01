@@ -1,5 +1,9 @@
 # Build component
 
+default:
+  tags:
+    - build
+
 #################
 # Job to extend #
 #################

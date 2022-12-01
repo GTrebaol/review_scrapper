@@ -4,38 +4,51 @@
 # Job to extend #
 #################
 
+# Generic publish
 .publish:
   stage: publish 🚀
   allow_failure: true # Allows to display the status OK even if the stage publish is not executed
   rules:
     - when: manual
 
+# Generic publish in off production
+.publish:hp:
+  extends: .publish
+  tags:
+    - deploy_hp
+
+# Generic publish in production
+.publish:prod:
+  extends: .publish
+  tags:
+    - deploy_prod
+
 # Publish an application on Appaloosa
 .publish:appaloosa:
-  extends: .publish
+  extends: .publish:hp
   variables:
     BITRISE_WORKFLOW: publish:appaloosa
 
 # Publish an Android application on the Play Store
 .publish:play-store:
-  extends: .publish
+  extends: .publish:prod
   variables:
     BITRISE_WORKFLOW: publish:play-store
 
 # Publish an iOS application on the App Store
 .publish:app-store:
-  extends: .publish
+  extends: .publish:prod
   variables:
     BITRISE_WORKFLOW: publish:app-store
 
 # Publish an Android module on Artifactory
 .publish:artifactory:
-  extends: .publish
+  extends: .publish:hp
   variables:
     BITRISE_WORKFLOW: publish:artifactory
 
 # Publish an iOS module on podspec repo
 .publish:podspec:
-  extends: .publish
+  extends: .publish:hp
   variables:
     BITRISE_WORKFLOW: publish:podspec
