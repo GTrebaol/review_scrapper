@@ -23,7 +23,7 @@ variables:
     - .gitrise
     - .build
   variables:
-    BITRISE_VARS: "ENV:REC,APP:$APP"
+    BITRISE_VARS: "ENV:REC,APP:$APP,CI_PIPELINE_ID:$CI_PIPELINE_ID"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     - when: manual

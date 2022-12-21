@@ -27,6 +27,6 @@
 
 # Load the Grandroid docker image
 .grandroid:
-  image: docker-registry.s.arkea.com/domi/grandroid:master
+  image: docker-registry.s.arkea.com/domi/grandroid:main
   before_script:
     - bundle install
