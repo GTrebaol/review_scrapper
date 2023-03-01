@@ -1,0 +1,11 @@
+# Stages compoennt
+
+# All stages for applications and modules
+stages:
+  - build 🛠️
+  - authorization 🔐
+  - publish 🚀
+  - communication 📣
+  - quality ✅
+  - sonar 📈
+  - application 📱

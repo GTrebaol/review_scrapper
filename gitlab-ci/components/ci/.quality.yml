@@ -1,9 +1,5 @@
 # Quality component
 
-#################
-# Job to extend #
-#################
-
 # Pass the quality of an application
 .quality:
   stage: quality ✅

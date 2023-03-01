@@ -2,36 +2,17 @@
 
 include:
   # Components
-  - local: "/gitlab-ci/components/technical/.docker.yml"
-  - local: "/gitlab-ci/components/technical/.gradle.yml"
+  - local: "gitlab-ci/components/technical/.gitrise.yml"
+  - local: "/gitlab-ci/components/technical/.sonar.yml"
   - local: "/gitlab-ci/components/ci/.publish.yml"
   - local: "/gitlab-ci/components/ci/.build.yml"
   - local: "/gitlab-ci/components/ci/.quality.yml"
   - local: "/gitlab-ci/components/ci/.workflow.yml"
-
-stages:
-  - pre-process ⚙
-  - build 🛠️
-  - quality ✅
-  - sonar 📈
-  - publish 🚀
+  - local: "/gitlab-ci/components/ci/.stages.yml"
 
 variables:
   HAS_DEMO_APP: "true"
   HAS_TESTS: "true"
-
-####################
-# Job to implement #
-####################
-
-# Check the branch name
-# check:branch_ame:
-#   extends:
-#     - .check:branch_ame
-
-#################
-# Job to extend #
-#################
 
 # Publish a module feature on artifactory
 .publish:artifactory:ftr:

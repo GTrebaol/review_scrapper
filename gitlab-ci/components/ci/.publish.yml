@@ -1,15 +1,8 @@
 # Publish component
 
-#################
-# Job to extend #
-#################
-
 # Generic publish
 .publish:
   stage: publish 🚀
-  allow_failure: true # Allows to display the status OK even if the stage publish is not executed
-  rules:
-    - when: manual
 
 # Publish an application on Appaloosa
 .publish:appaloosa:
