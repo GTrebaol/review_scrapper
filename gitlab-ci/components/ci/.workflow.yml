@@ -13,7 +13,7 @@ default:
 # A branch pipeline, but there is no merge request open for the branch, run the branch pipeline.
 workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_MERGE_REQUEST_ID'
     - if: "$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS"
       when: never
     - if: "$CI_COMMIT_BRANCH"

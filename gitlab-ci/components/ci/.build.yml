@@ -1,9 +1,5 @@
 # Build component
 
-#################
-# Job to extend #
-#################
-
 # Build an application
 .build:
   stage: build 🛠️

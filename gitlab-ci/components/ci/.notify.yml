@@ -1,0 +1,7 @@
+# Notify component
+
+# Notify publish of an application
+.notify:publish:
+  stage: communication 📣
+  variables:
+    BITRISE_WORKFLOW: notify:publish

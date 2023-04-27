@@ -2,36 +2,17 @@
 
 include:
   # Components
-  - local: "/gitlab-ci/components/technical/.docker.yml"
-  - local: "/gitlab-ci/components/technical/.gradle.yml"
+  - local: "gitlab-ci/components/technical/.gitrise.yml"
+  - local: "/gitlab-ci/components/technical/.sonar.yml"
   - local: "/gitlab-ci/components/ci/.publish.yml"
   - local: "/gitlab-ci/components/ci/.build.yml"
   - local: "/gitlab-ci/components/ci/.quality.yml"
   - local: "/gitlab-ci/components/ci/.workflow.yml"
-
-stages:
-  - pre-process ⚙
-  - build 🛠️
-  - quality ✅
-  - sonar 📈
-  - publish 🚀
+  - local: "/gitlab-ci/components/ci/.stages.yml"
 
 variables:
   HAS_DEMO_APP: "true"
   HAS_TESTS: "true"
-
-####################
-# Job to implement #
-####################
-
-# Check the branch name
-# check:branch_ame:
-#   extends:
-#     - .check:branch_ame
-
-#################
-# Job to extend #
-#################
 
 # Publish a module feature on artifactory
 .publish:artifactory:ftr:
@@ -42,6 +23,7 @@ variables:
     BITRISE_VARS: TYPE:FTR
   rules:
     - when: manual
+      allow_failure: true
 
 # Publish a module in demo-app on appaloosa
 .publish:appaloosa:ftr:
@@ -54,6 +36,7 @@ variables:
     - if: '$HAS_DEMO_APP == "false"'
       when: never
     - when: manual
+      allow_failure: true
 
 # Publish a module from develop in release state
 .publish:artifactory:rel:
@@ -66,6 +49,7 @@ variables:
     - if: $CI_COMMIT_BRANCH == "develop"
       when: always
     - when: manual
+      allow_failure: true
 
 # Publish a module from develop in release state
 .publish:artifactory:fix:
@@ -76,6 +60,7 @@ variables:
     BITRISE_VARS: TYPE:FIX
   rules:
     - when: manual
+      allow_failure: true
 
 # Publish a module feature on podspec repo
 .publish:podspec:ftr:
@@ -86,6 +71,7 @@ variables:
     BITRISE_VARS: TYPE:FTR
   rules:
     - when: manual
+      allow_failure: true
 
 # Publish a module from develop in release state
 .publish:podspec:rel:
@@ -98,6 +84,7 @@ variables:
     - if: $CI_COMMIT_BRANCH == "develop"
       when: always
     - when: manual
+      allow_failure: true
 
 # Publish a fix for a module
 .publish:podspec:fix:
@@ -108,3 +95,4 @@ variables:
     BITRISE_VARS: TYPE:FIX
   rules:
     - when: manual
+      allow_failure: true

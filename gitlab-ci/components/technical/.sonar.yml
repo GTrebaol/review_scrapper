@@ -1,16 +1,19 @@
-# Composant de pipeline Gradle
-variables:
-  # Disable the Gradle daemon for Continuous Integration servers as correctness
-  # is usually a priority over speed in CI environments. Using a fresh
-  # runtime for each build is more reliable since the runtime is completely
-  # isolated from any previous builds.
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx4096M -Dorg.gradle.parallel=false"
-  # URL du SONAR
-  SONAR_URL: http://sonarqube-prd.intra.arkea.com:8080
-  # Nom du module, obligatoire pour build sans le projet de démo
-  MODULE_NAME: ""
+# Sonar component
+
+# Load the Sonar docker image
+.sonar:cli:
+  image: docker-registry.s.arkea.com/sonarsource/sonar-scanner-cli
+  script:
+    - sonar-scanner
 
 .sonar:gradle:
+  image: docker-registry.s.arkea.com/domi/grandroid:main
+  variables:
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx4096M -Dorg.gradle.parallel=false"
+    SONAR_URL: http://sonarqube-prd.intra.arkea.com:8080
+    MODULE_NAME: ""
+  before_script:
+    - bundle install
   script:
     - mkdir -p .gradle && cp /root/.gradle/gradle.properties .gradle/
     - export GRADLE_USER_HOME="$(pwd)/.gradle"
