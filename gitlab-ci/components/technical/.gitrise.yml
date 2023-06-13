@@ -1,5 +1,10 @@
 # Gitrise component
 
+default:
+  tags:
+    - docker
+    - hiperf
+
 # Load the Gitrise docker image
 .gitrise:
   image: docker-registry.s.arkea.com/ccwm/gitrise:latest

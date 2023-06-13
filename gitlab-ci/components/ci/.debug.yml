@@ -1,0 +1,6 @@
+# Debug component
+
+.debug:
+  stage: debug 🛠️
+  script:
+    - env

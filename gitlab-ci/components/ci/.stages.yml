@@ -2,9 +2,9 @@
 
 # All stages for applications and modules
 stages:
-  - build 🛠️
+  - debug 🛠️
   - quality ✅
-  - sonar 📈
+  - build 🏗️
   - authorization 🔐
   - publish 🚀
   - communication 📣

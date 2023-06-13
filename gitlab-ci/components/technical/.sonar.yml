@@ -2,40 +2,11 @@
 
 # Load the Sonar docker image
 .sonar:cli:
-  image: docker-registry.s.arkea.com/sonarsource/sonar-scanner-cli
-  script:
-    - sonar-scanner
-
-.sonar:gradle:
-  image: docker-registry.s.arkea.com/domi/grandroid:main
-  variables:
-    GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx4096M -Dorg.gradle.parallel=false"
-    SONAR_URL: http://sonarqube-prd.intra.arkea.com:8080
-    MODULE_NAME: ""
+  image: docker-registry.s.arkea.com/domi/do-mobile/sonarqube
   before_script:
+    - git config --global url.https://$KS739_API_USERNAME:$KS739_API_TOKEN@gitlark.s.arkea.com/.insteadOf https://gitlark.s.arkea.com/
     - bundle install
   script:
-    - mkdir -p .gradle && cp /root/.gradle/gradle.properties .gradle/
-    - export GRADLE_USER_HOME="$(pwd)/.gradle"
-    - export CODE_BOITE=$(echo $CI_PROJECT_NAMESPACE | cut -d '/' -f2)
-    - export PROJECT_KEY=${CODE_BOITE}_${CI_PROJECT_NAME}
-    - ./gradlew sonarqube
-      -Dtest.ignoreFailures=false
-      -Dsonar.host.url=$SONAR_URL
-      -Dsonar.projectName=$PROJECT_KEY
-      -Dsonar.projectKey=$PROJECT_KEY
-  after_script:
-    - find . -type d -path "**/src/main/kotlin" -print | grep -v "demo\|buildSrc"
-    - srcPath=`find . -type d -path "**/src/main/kotlin" -print | grep -v "demo\|buildSrc"`
-    - python3 /opt/cover2cover.py ./build/jacoco/jacocoReport.xml $srcPath > coverage.xml
-    - python3 /opt/source2filename.py coverage.xml
-    - awk -F"," '{ nbLines += $8 + $9; nbConditions += $6 + $7; coveredLines += $9; uncoveredConditions += $6 ;coveredConditions += $7 } END { print "coverage =",((coveredConditions+coveredLines)/(nbConditions+nbLines))*100, "%" }' ./build/jacoco/jacocoReport.csv
-  artifacts:
-    paths:
-      - ./coverage.xml
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: ./coverage.xml
-      junit:
-        - "**/build/test-results/**/TEST-*.xml"
+    - bundle exec fastlane run_sonarqube_analysis --env $ENV
+  tags:
+    - hiperf

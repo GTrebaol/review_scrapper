@@ -2,6 +2,6 @@
 
 # Build an application
 .build:
-  stage: build 🛠️
+  stage: build 🏗️
   variables:
     BITRISE_WORKFLOW: build

@@ -4,12 +4,10 @@
 .quality:
   stage: quality ✅
 
-# Pass the quality of an application on Bitrise
-.quality:bitrise:
-  extends:
-    - .quality
+.quality:unit-tests:
+  extends: .quality
   variables:
     BITRISE_WORKFLOW: quality
 
-.quality:sonar:
-  stage: sonar 📈
+.quality:sonarqube:
+  extends: .quality
