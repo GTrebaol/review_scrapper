@@ -10,6 +10,8 @@ include:
   - local: "/gitlab-ci/components/technical/.gitrise.yml"
   - local: "/gitlab-ci/components/ci/.notify.yml"
   - local: "/gitlab-ci/components/ci/.debug.yml"
+  - local: "/gitlab-ci/components/ci/.quality.yml"
+  - local: "/gitlab-ci/components/ci/.application.yml"
 
 variables:
   BITRISE_APP_SLUG: $BITRISE_APP_SLUG_DEV
@@ -18,6 +20,16 @@ variables:
 
 .debug:app:
   extends: .debug
+
+# application 📱
+
+.application:app:
+  extends: .application
+
+# quality ✅
+
+.quality:end-to-end:app:
+  extends: .quality:end-to-end
 
 # build 🏗️
 

@@ -11,3 +11,6 @@
 
 .quality:sonarqube:
   extends: .quality
+
+.quality:end-to-end:
+  extends: .quality

@@ -21,6 +21,8 @@ variables:
 .debug:app:
   extends: .debug
 
+# quality ✅
+
 .quality:unit-tests:module:
   extends:
     - .gitrise:download-artifacts
@@ -35,6 +37,8 @@ variables:
     - .quality:sonarqube
   variables:
     ENV: REL
+
+# build 🏗️
 
 .build:module:
   extends:
@@ -55,6 +59,8 @@ variables:
   extends: .build:module
   variables:
     ENV: REL
+
+# publish 🚀
 
 .publish:artifactory:module:
   extends:
