@@ -1,34 +1,28 @@
 # Publish component
 
-# Generic publish
 .publish:
   stage: publish 🚀
 
-# Publish an application on Appaloosa
 .publish:appaloosa:
   extends: .publish
   variables:
     BITRISE_WORKFLOW: publish:appaloosa
 
-# Publish an Android application on the Play Store
 .publish:play-store:
   extends: .publish
   variables:
     BITRISE_WORKFLOW: publish:play-store
 
-# Publish an iOS application on the App Store
 .publish:app-store:
   extends: .publish
   variables:
     BITRISE_WORKFLOW: publish:app-store
 
-# Publish an Android module on Artifactory
 .publish:artifactory:
   extends: .publish
   variables:
     BITRISE_WORKFLOW: publish:artifactory
 
-# Publish an iOS module on podspec repo
 .publish:podspec:
   extends: .publish
   variables:

@@ -1,6 +1,5 @@
 # Quality component
 
-# Pass the quality of an application
 .quality:
   stage: quality ✅
 
@@ -10,4 +9,7 @@
     BITRISE_WORKFLOW: quality
 
 .quality:sonarqube:
+  extends: .quality
+
+.quality:end-to-end:
   extends: .quality

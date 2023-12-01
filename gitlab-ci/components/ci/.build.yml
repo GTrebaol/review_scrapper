@@ -1,6 +1,5 @@
 # Build component
 
-# Build an application
 .build:
   stage: build 🏗️
   variables:

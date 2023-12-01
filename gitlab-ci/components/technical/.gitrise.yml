@@ -5,13 +5,11 @@ default:
     - docker
     - hiperf
 
-# Load the Gitrise docker image
 .gitrise:
   image: docker-registry.s.arkea.com/ccwm/gitrise:latest
   script:
     - gitrise -a "$BITRISE_USER_TOKEN" -s "$BITRISE_APP_SLUG" -w "$BITRISE_WORKFLOW" -b "$CI_COMMIT_REF_NAME" -c "$CI_COMMIT_SHA" -e "$BITRISE_VARS"
 
-# Load the Gitrise docker image with the artifacts download option
 .gitrise:download-artifacts:
   image: docker-registry.s.arkea.com/ccwm/gitrise:latest
   script:

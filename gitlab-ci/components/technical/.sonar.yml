@@ -1,6 +1,5 @@
 # Sonar component
 
-# Load the Sonar docker image
 .sonar:cli:
   image: docker-registry.s.arkea.com/domi/do-mobile/sonarqube
   before_script:

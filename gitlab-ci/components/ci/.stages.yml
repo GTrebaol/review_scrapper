@@ -3,9 +3,9 @@
 # All stages for applications and modules
 stages:
   - debug 🛠️
+  - application 📱
   - quality ✅
   - build 🏗️
   - authorization 🔐
   - publish 🚀
   - communication 📣
-  - application 📱
