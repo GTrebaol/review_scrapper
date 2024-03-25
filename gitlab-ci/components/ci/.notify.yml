@@ -1,6 +1,0 @@
-# Notify component
-
-.notify:publish:
-  stage: communication 📣
-  variables:
-    BITRISE_WORKFLOW: notify:publish

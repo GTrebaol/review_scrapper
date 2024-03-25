@@ -1,6 +1,0 @@
-# Build component
-
-.build:
-  stage: build 🏗️
-  variables:
-    BITRISE_WORKFLOW: build

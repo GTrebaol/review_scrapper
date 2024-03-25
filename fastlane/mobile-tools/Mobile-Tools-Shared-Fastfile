@@ -1,0 +1,18 @@
+lane :upload_crash_files_on_instana do |params|
+    os = params[:os]
+    working_dir = params[:working_dir]
+    file_name = params[:file_name]
+    file_id = params[:file_id]
+    config_id = params[:config_id]
+    sourcemap_upload_id = params[:sourcemap_upload_id]
+    production = params[:production]
+    instana_manager(
+        os: os,
+        working_dir: working_dir,
+        file_name: file_name,
+        file_id: file_id,
+        config_id: config_id,
+        sourcemap_upload_id: sourcemap_upload_id,
+        production: production
+    )
+end
