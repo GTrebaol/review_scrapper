@@ -1,0 +1,46 @@
+lane :upload_crash_files_on_instana do |params|
+    os = params[:os]
+    working_dir = params[:working_dir]
+    file_name = params[:file_name]
+    file_id = params[:file_id]
+    config_id = params[:config_id]
+    sourcemap_upload_id = params[:sourcemap_upload_id]
+    production = params[:production]
+    instana_manager(
+        os: os,
+        working_dir: working_dir,
+        file_name: file_name,
+        file_id: file_id,
+        config_id: config_id,
+        sourcemap_upload_id: sourcemap_upload_id,
+        production: production
+    )
+end
+
+lane :notification_gchat do |params|
+    message = params[:message]
+    is_delivery = params[:is_delivery]
+    webhook_url = params[:webhook_url]
+    name = params[:name]
+    build_env = params[:build_env]
+    build_branch = params[:build_branch]
+    version_name = params[:version_name]
+    build_number = params[:build_number]
+    extra_link = params[:extra_link]
+    app_icon_url = params[:app_icon_url]
+    os_icon_url = params[:os_icon_url]
+
+        gchat_notification_manager(
+        message: message,
+        is_delivery: is_delivery,
+        webhook_url: webhook_url,
+        name: name,
+        build_env: build_env,
+        build_branch: build_branch,
+        version_name: version_name,
+        build_number: build_number,
+        extra_link: extra_link,
+        app_icon_url: app_icon_url,
+        os_icon_url: os_icon_url
+    )
+end
