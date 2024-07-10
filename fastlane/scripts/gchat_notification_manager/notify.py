@@ -3,21 +3,48 @@ import json
 import logging
 import os
 import optparse
+import random
+import string
 
 
 proxy_settings = {"http": "", "https": ""}
 
+def get_text_from_file(filename: str) -> str:
+    result = ""
+    with open(filename) as f:
+        result = f.read()
+    return result
 
-def send_simple_message(google_chat_webhook_url: str, message: str) -> bool:
+def generate_thread_id(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
+def send_reviews_from_json(filename: str, google_chat_webhook_url: str):
+    with open(filename) as file:
+        result = json.loads(file.read())
+        for review in result["reviews"]:
+            thread_id = generate_thread_id(5)
+            review_intro = f"Nouveau commentaire sur l'application {review["os"]} de : {review["author_name"]} \nNote:{review["rating"]}"
+            review_content = f"Commentaire : {review["content"]}"
+            send_simple_message(google_chat_webhook_url=google_chat_webhook_url, message=review_intro, threadId=thread_id)
+            send_simple_message(google_chat_webhook_url=google_chat_webhook_url, message=review_content, threadId=thread_id)
+
+
+def send_simple_message(google_chat_webhook_url: str, message: str, threadId: str) -> bool:
     """
     # Envoi d'un simple message texte dans un canal google chat
     :param google_chat_webhook_url: URL du webhook configuré dans le canal Google Chat
     :param message: Corps du message à poster
     :return: True si le message est posté, False si une erreur est survenue
     """
-    google_chat_url = google_chat_webhook_url
+    google_chat_url = google_chat_webhook_url+"&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD"
+    if threadId and threadId != "":
+        thread_body=',"thread": {"threadKey": "%s"}' % threadId
+    else:
+        thread_body = ""
     message_headers = {"Content-Type": "application/json; charset=UTF-8"}
-    google_chat_message = '{"text": "' + message + '"}'
+    google_chat_message ='{"text": "%s" %s}' % (message, thread_body)
+    print(google_chat_url)
     session = requests.session()
     session.proxies.update(proxy_settings)
     try:
@@ -119,16 +146,22 @@ if __name__ == "__main__":
     options.add_option("-e", "--env", type="str", default="REC", help="environment")
     options.add_option("-b", "--branch", type="str", default="Branch", help="branch")
     options.add_option("-v", "--version", type="str", default="Version", help="version")
-    options.add_option("-r", "--link", type="str", default="Extra link", help="Extra link")
+    options.add_option("-l", "--link", type="str", default="Extra link", help="Extra link")
     options.add_option("-i", "--image", type="str", default="", help="add image")
     options.add_option("-p", "--platform", type="str", default="", help="add os img")
+    options.add_option("-f", "--file", type="str", default="", help="get text from file")
+    options.add_option("-r", "--review", type="str", default="false", help="thread id")
 
     opts, args = options.parse_args()
     if opts.delivery != "true":
-        send_simple_message(
-            google_chat_webhook_url=opts.webhook,
-            message=opts.message
-        )
+        if(opts.review != "false" and opts.file != ""):
+            send_reviews_from_json(opts.file, opts.webhook)
+        elif(opts.t):
+            message = opts.message
+            send_simple_message(
+                google_chat_webhook_url=opts.webhook,
+                message=message
+            )
     else:
         send_delivery_message(
             google_chat_webhook_url=opts.webhook,

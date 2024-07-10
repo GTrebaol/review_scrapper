@@ -1,0 +1,69 @@
+{
+  "cardsV2": [
+    {
+      "cardId": "review",
+      "card": {
+        "header": {
+          "title": "Review",
+          "imageType": "SQUARE",
+          "imageUrl": "#platform#",
+          "imageAltText": "Delivering...!"
+        },
+        "sections": [
+          {
+            "header": "Infos",
+            "collapsible": false,
+            "widgets": [
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>Auteur :</b> #author#</font>",
+                  "startIcon": {
+                    "iconUrl": "https://cdn-icons-png.flaticon.com/512/4908/4908200.png"
+                  }
+                }
+              },
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>Note :</b> #note#</font>",
+                  "startIcon": {
+                    "iconUrl": "https://cdn-icons-png.flaticon.com/512/8743/8743831.png"
+                  }
+                }
+              },
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>Branche :</b> #branch#</font>",
+                  "startIcon": {
+                    "iconUrl": "https://cdn-icons-png.flaticon.com/512/4908/4908200.png"
+                  }
+                }
+              },
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>Version :</b> #version#</font>",
+                  "startIcon": {
+                    "iconUrl": "https://cdn-icons-png.flaticon.com/512/6008/6008549.png"
+                  }
+                }
+              },
+              {
+                "buttonList": {
+                  "buttons": [
+                    {
+                      "text": "Lien",
+                      "onClick": {
+                        "openLink": {
+                          "url": "#releaseNote#"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
