@@ -19,17 +19,6 @@ def generate_thread_id(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
 
-def send_reviews_from_json(filename: str, google_chat_webhook_url: str):
-    with open(filename) as file:
-        result = json.loads(file.read())
-        for review in result["reviews"]:
-            thread_id = generate_thread_id(5)
-            review_intro = f"Nouveau commentaire sur l'application {review["os"]} de : {review["author_name"]} \nNote:{review["rating"]}"
-            review_content = f"Commentaire : {review["content"]}"
-            send_simple_message(google_chat_webhook_url=google_chat_webhook_url, message=review_intro, threadId=thread_id)
-            send_simple_message(google_chat_webhook_url=google_chat_webhook_url, message=review_content, threadId=thread_id)
-
-
 def send_simple_message(google_chat_webhook_url: str, message: str, threadId: str) -> bool:
     """
     # Envoi d'un simple message texte dans un canal google chat
@@ -45,6 +34,7 @@ def send_simple_message(google_chat_webhook_url: str, message: str, threadId: st
     message_headers = {"Content-Type": "application/json; charset=UTF-8"}
     google_chat_message ='{"text": "%s" %s}' % (message, thread_body)
     print(google_chat_url)
+    print(google_chat_message)
     session = requests.session()
     session.proxies.update(proxy_settings)
     try:
@@ -64,6 +54,68 @@ def send_simple_message(google_chat_webhook_url: str, message: str, threadId: st
     except requests.RequestException as e:
         logging.error(f"Impossible de poster le message sur Google Chat : {e.response}")
         return False
+
+def send_card_message(google_chat_webhook_url: str, message_json : str):
+    message_headers = {"Content-Type": "application/json"}
+    session = requests.session()
+    session.proxies.update(proxy_settings)
+    try:
+        response = session.post(
+            google_chat_webhook_url+"&messageReplyOption=REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD",
+            json=json.loads(message_json),
+            headers=message_headers,
+            proxies=proxy_settings,
+        )
+        print(response)
+        if str(response.status_code).startswith("2"):
+            return True
+        else:
+            logging.error(
+                f"Erreur {str(response.status_code)}. Le message n'a pas pu être posté sur Google Chat."
+            )
+            return False
+    except requests.RequestException as e:
+        logging.error(
+            f"Impossible de poster le message sur Google Chat : {e.response}"
+        )
+        return False
+
+def send_review_message(
+        google_chat_webhook_url: str,
+        filename: str
+):
+    with open(filename) as file:
+        result = json.loads(file.read())
+        for review in result["reviews"]:
+            thread_id = generate_thread_id(5)
+            template_file = os.path.dirname(__file__) + "/template_review.json"
+            with open(template_file) as template:
+                print(review)
+                google_chat_json = template.read()
+                google_chat_json = google_chat_json.replace("#author#", review['author_name'])
+                google_chat_json = google_chat_json.replace("#note#", review['rating'])
+                google_chat_json = google_chat_json.replace("#color#", "#0E3C68")
+                google_chat_json = google_chat_json.replace("#version#", review['version'])
+                google_chat_json = google_chat_json.replace("#version_code#", str(review['build_version']))
+                google_chat_json = google_chat_json.replace("#phone#", review['phone'])
+                google_chat_json = google_chat_json.replace("#threadId#", thread_id)
+                google_chat_url = google_chat_webhook_url
+
+                avatar_url = "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTPvFqD-oo4WMdikaau1qoCReBs1-aJSKEKRXubxk03-5MTDjJJ"
+                if review["os"] == "Android":
+                    avatar_url = "https://lh6.googleusercontent.com/proxy/NYTh9VGNYogtyxClVtgIMHkObbFxpzElxzwI1ck7RvRypoVUeuwVWy6JdOMfHb_Bo3AZcbbhaMHlD1q1TS86og8dSij4Pgp3aBs3QNPG9rBcbiuHsnZe8Gz9YADikqlv4mrAp5AnnI9FlZjdtm9ZAoHhVfUwYukRzg"
+
+                google_chat_json = google_chat_json.replace("#avatar#", avatar_url)
+
+                if review["truncated_comment"] != "":
+                    full_comment = "Suite du commentaire : \n« " + review["content"] + " »"
+                    google_chat_json = google_chat_json.replace("#comment#", review["truncated_comment"])
+                    send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
+                    send_simple_message(google_chat_webhook_url=google_chat_url, message=full_comment, threadId=thread_id)
+                else:
+                    google_chat_json = google_chat_json.replace("#comment#", review["content"])
+                    send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
+
 
 
 def send_delivery_message(
@@ -106,28 +158,8 @@ def send_delivery_message(
         google_chat_json = google_chat_json.replace("#releaseNote#", f"{link}")
         print(google_chat_json)
         google_chat_url = google_chat_webhook_url
-        message_headers = {"Content-Type": "application/json"}
-        session = requests.session()
-        session.proxies.update(proxy_settings)
-        try:
-            response = session.post(
-                google_chat_url,
-                json=json.loads(google_chat_json),
-                headers=message_headers,
-                proxies=proxy_settings,
-            )
-            if str(response.status_code).startswith("2"):
-                return True
-            else:
-                logging.error(
-                    f"Erreur {str(response.status_code)}. Le message n'a pas pu être posté sur Google Chat."
-                )
-                return False
-        except requests.RequestException as e:
-            logging.error(
-                f"Impossible de poster le message sur Google Chat : {e.response}"
-            )
-            return False
+
+        send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
 
 
 if __name__ == "__main__":
@@ -155,7 +187,7 @@ if __name__ == "__main__":
     opts, args = options.parse_args()
     if opts.delivery != "true":
         if(opts.review != "false" and opts.file != ""):
-            send_reviews_from_json(opts.file, opts.webhook)
+            send_review_message(google_chat_webhook_url=opts.webhook, filename=opts.file)
         elif(opts.t):
             message = opts.message
             send_simple_message(
