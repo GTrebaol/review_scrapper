@@ -1,4 +1,6 @@
-pyjwt
-googleapiclient.discovery
-google.oauth2
-requests
+google-api-core==2.19.1
+google-api-python-client==2.137.0
+google-auth==2.32.0
+google-auth-httplib2==0.2.0
+requests==2.31.0
+PyJWT==2.8.0
