@@ -13,7 +13,13 @@ module Fastlane
         extra_link = params[:extra_link]
         app_icon_url = params[:app_icon_url]
         os_icon_url = params[:os_icon_url]
+        file_path = params[:file_path]
+        is_review = params[:is_review]
         version = ""
+
+        is_delivery = is_delivery == "true" ? true:false
+        is_review = is_review == "true" ? true:false
+
         if extra_link.nil?
           extra_link = "Aucun lien fourni"
         end
@@ -22,11 +28,20 @@ module Fastlane
         else
           version = "#{version_name} (#{build_number})"
         end
-        p params
-        params = "-d '#{is_delivery}' -w '#{webhook_url}'"
-        params += is_delivery == "false" ? " -m '#{message}'" : " -a '#{name}' -e '#{build_env}' -b '#{build_branch}' -v '#{version}' -r '#{extra_link}' -p '#{os_icon_url}'"
-        params += "-i '#{app_icon_url}'" if(!app_icon_url.nil?)
 
+        params = " -w '#{webhook_url}'"
+
+        if is_delivery
+            params += " -d '#{is_delivery}' -a '#{name}' -e '#{build_env}' -b '#{build_branch}' -v '#{version}' -r '#{extra_link}' -p '#{os_icon_url}'"
+        else
+            if is_review
+                params += " -f '#{file_path}' -r true"
+            else
+                params += " -m '#{message}'"
+            end
+        end
+
+        params += " -i '#{app_icon_url}'" if(!app_icon_url.nil?)
         sh("python3 fastlane/#{ENV["FASTLANE_CACHE_IMPORT_PATH"]}/mobile.git/fastlane/scripts/gchat_notification_manager/notify.py #{params}")
       end
 
@@ -47,7 +62,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(key: :is_delivery,
                                    env_name: "IS_DELIVERY",
                                 description: "Boolean telling if the message if for an app delivery or not",
-                                   optional: false,
+                                   optional: true,
                                        type: String),
           FastlaneCore::ConfigItem.new(key: :message,
                                   env_name: "MESSAGE",
@@ -98,7 +113,17 @@ module Fastlane
                                   env_name: "OS_ICON_URL",
                                description: "The URL of the icon of the OS",
                                   optional: true,
-                                      type: String)
+                                      type: String),
+          FastlaneCore::ConfigItem.new(key: :is_review,
+                                   env_name: "IS_REVIEW",
+                                description: "Boolean telling if the message is a review",
+                                   optional: true,
+                                       type: String),
+          FastlaneCore::ConfigItem.new(key: :file_path,
+                                   env_name: "FILE",
+                                description: "file path",
+                                   optional: true,
+                                       type: String)
         ]
       end
 

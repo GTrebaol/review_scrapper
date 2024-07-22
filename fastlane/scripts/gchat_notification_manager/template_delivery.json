@@ -3,16 +3,9 @@
     {
       "cardId": "delivery",
       "card": {
-        "header": {
-          "title": "Livraison",
-          "imageType": "SQUARE",
-          "imageUrl": "#platform#",
-          "imageAltText": "Delivering...!"
-        },
         "sections": [
           {
             "header": "Infos",
-            "collapsible": false,
             "widgets": [
               {
                 "decoratedText": {
@@ -45,24 +38,16 @@
                     "iconUrl": "https://cdn-icons-png.flaticon.com/512/6008/6008549.png"
                   }
                 }
-              },
-              {
-                "buttonList": {
-                  "buttons": [
-                    {
-                      "text": "Lien",
-                      "onClick": {
-                        "openLink": {
-                          "url": "#releaseNote#"
-                        }
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
-        ]
+        ],
+        "header": {
+          "title": "#title#",
+          "imageType": "SQUARE",
+          "imageUrl": "#platform#",
+          "imageAltText": "Delivering...!"
+        }
       }
     }
   ]

@@ -1,0 +1,56 @@
+{
+  "cardsV2": [
+    {
+      "cardId": "review",
+      "card": {
+        "header": {
+          "title": "#author#",
+          "subtitle": "#note#",
+          "imageUrl": "#avatar#",
+          "imageType": "CIRCLE"
+        },
+        "sections": [
+          {
+            "collapsible": true,
+            "uncollapsibleWidgetsCount": 4,
+            "widgets": [
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "FLIGHT_DEPARTURE"
+                  },
+                  "topLabel": "Version",
+                  "text": "#version#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "CONFIRMATION_NUMBER_ICON"
+                  },
+                  "topLabel": "Version Code",
+                  "text": "#version_code#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "PHONE"
+                  },
+                  "topLabel": "Téléphone",
+                  "text": "#phone#"
+                }
+              },
+              {
+                "textParagraph": {
+                  "text": "#content#"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "thread" : { "threadKey":  "#threadId#"}
+}

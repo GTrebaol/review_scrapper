@@ -9,7 +9,7 @@ module Fastlane
           config_id = params[:config_id]
           sourcemap_upload_id = params[:sourcemap_upload_id]
           production = params[:production]
-          instana_manager_cmd = "python3 #{ENV["PWD"]}/fastlane/#{ENV["FASTLANE_CACHE_IMPORT_PATH"]}/mobile.git/fastlane/mobile-tools/scripts/instana_manager/instana_manager.py"
+          instana_manager_cmd = "python3 #{ENV["PWD"]}/fastlane/#{ENV["FASTLANE_CACHE_IMPORT_PATH"]}/mobile.git/fastlane/scripts/instana_manager/instana_manager.py"
           if production
             instana_manager_cmd << "\s-p"
           end

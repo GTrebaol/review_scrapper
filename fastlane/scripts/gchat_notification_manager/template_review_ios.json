@@ -1,0 +1,30 @@
+{
+  "cardsV2": [
+    {
+      "cardId": "review",
+      "card": {
+        "header": {
+          "title": "#author#",
+          "subtitle": "#note#",
+          "imageUrl": "#avatar#",
+          "imageType": "CIRCLE"
+        },
+        "sections": [
+          {
+            "header": "#title#",
+            "collapsible": true,
+            "uncollapsibleWidgetsCount": 1,
+            "widgets": [
+              {
+                "textParagraph": {
+                  "text": "#content#"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "thread" : { "threadKey":  "#threadId#"}
+}

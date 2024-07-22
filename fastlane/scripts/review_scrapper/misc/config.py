@@ -1,11 +1,38 @@
 # config.py
-from datetime import datetime, timedelta
 
-KEY_ID = '539Y9B38ZP'
-ISSUER_ID = '69a6de70-bb8a-47e3-e053-5b8c7c11a4d1'
-IOS_PACKAGE_NAME = 'com.fortuneo.ios'
-ANDROID_PACKAGE_NAME = 'com.fortuneo.android'
-OUTPUT_FILE = 'reviews.json'
-TIMEDELTA_HOURS = 3
-REVIEWS_FETCH_QUANTITY = 10
-TIME_THRESHOLD = datetime.today() - timedelta(hours=TIMEDELTA_HOURS)
+import os
+import httplib2
+from urllib.parse import urlparse
+
+class Config:
+    def __init__(self):
+        # KEY_ID, ISSUER_ID, PRIVATE_KEY are for ios
+        # JSON_KEY_DATA is for google
+        self.KEY_ID = os.getenv('KEY_ID', 'DEFAULT_KEY_ID')
+        self.ISSUER_ID = os.getenv('ISSUER_ID', 'DEFAULT_ISSUER_ID')
+        self.PRIVATE_KEY = os.getenv('PRIVATE_KEY', 'DEFAULT_PRIVATE_KEY')
+        self.JSON_KEY_DATA = os.getenv('JSON_KEY_DATA', 'DEFAULT_JSON_KEY_DATA')
+        self.REPO_PACKAGE_NAME = os.getenv('REPO_PACKAGE_NAME', 'DEFAULT_APP_PACKAGE_ID')
+        self.OUTPUT_FILE = os.getenv('OUTPUT_FILE', 'reviews.json')
+        self.TIMEDELTA_HOURS = int(os.getenv('TIMEDELTA_HOURS', 72))
+        self.REVIEWS_FETCH_QUANTITY = 50
+        self.DATETIME_FORMAT = "%d/%m/%y %H:%M:%S"
+        self.PROXIES = {
+            'http': os.getenv("http_proxy"),
+            'https': os.getenv("http_proxy"),
+        }
+        self.PROXY_GOOGLE_OBJECT = configure_proxy(urlparse(os.getenv("http_proxy")))
+
+
+def configure_proxy(url_parse):
+    http = httplib2.Http()
+    proxy_info = httplib2.ProxyInfo(
+        proxy_type=httplib2.socks.PROXY_TYPE_HTTP,
+        proxy_host=url_parse.hostname,
+        proxy_port=url_parse.port,
+    )
+    http.proxy_info = proxy_info
+    return http
+
+
+config = Config()

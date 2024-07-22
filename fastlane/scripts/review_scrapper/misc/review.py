@@ -3,19 +3,21 @@
 import json
 from datetime import datetime
 
+
 class Review:
-    def __init__(self, os, author_name, rating, content, timestamp, version, build_version, phone, truncated_comment):
+    def __init__(self, os, author_name, title, rating, content, datetime, version, build_version, phone, truncated_comment):
         self.os = os
         self.author_name = author_name
         self.rating = rating
         self.content = content
         self.truncated_comment = truncated_comment
-        self.datetime = datetime.fromtimestamp(float(timestamp))
+        self.datetime = datetime
+        self.title = title
         self.version = version
         self.build_version = build_version
         self.phone = phone
 
-    def toJSON(self):
+    def to_json(self):
         serializable_object = self
         serializable_object.datetime = str(serializable_object.datetime)
         return json.dumps(
