@@ -154,14 +154,14 @@ class IosInstanaManager(InstanaManager):
             working_dir (str): The working directory where to find the debug symbols file and subfiles.
             dsyms_name (str): The dSYM content to upload.
         """
-        if not os.path.exists(f"{working_dir}/{dsyms_name}.zip"):
-            print(f"File not found: {working_dir}/{dsyms_name}.zip")
+        if not os.path.exists(f"{working_dir}/{dsyms_name}"):
+            print(f"File not found: {working_dir}/{dsyms_name}")
             return
         subprocess.run(
             [
                 "unzip",
                 "-q",
-                f"{working_dir}/{dsyms_name}.zip",
+                f"{working_dir}/{dsyms_name}",
                 "-d",
                 f"{working_dir}/{dsyms_name}",
             ]
@@ -227,7 +227,7 @@ class AndroidInstanaManager(InstanaManager):
                 "tar",
                 "-czf",
                 f"{working_dir}/{file_name}.tgz",
-                f"{working_dir}/{file_name}.txt",
+                f"{working_dir}/{file_name}",
             ]
         )
 
@@ -309,20 +309,26 @@ def main():
             }
         )
 
-    if args.upload_android != None:
+    if args.upload_android is not None:
+        filename = args.upload_android[1]
+        if not filename.endswith('.txt'):
+            filename = filename + ".txt"
         android_instana_manager = AndroidInstanaManager()
         android_instana_manager.process_r8pg_map(
             args.upload_android[0],
-            args.upload_android[1],
+            filename,
             args.upload_android[2],
             args.upload_android[3],
             args.upload_android[4],
         )
-    elif args.upload_ios != None:
+    elif args.upload_ios is not None:
+        filename = args.upload_ios[1]
+        if not filename.endswith('.zip'):
+            filename = filename + ".zip"
         ios_instana_manager = IosInstanaManager()
         ios_instana_manager.process_dsyms(
             args.upload_ios[0],
-            args.upload_ios[1],
+            filename,
             args.upload_ios[2],
             args.upload_ios[3],
             args.upload_ios[4],
