@@ -19,5 +19,5 @@ def create_token():
         'exp': int(time.time()) + 20 * 60,  # Token is valid for 20 minutes
         'aud': 'appstoreconnect-v1'
     }
-    token = jwt.encode(payload, config.PRIVATE_KEY, algorithm='ES256', headers=header)
+    token = jwt.encode(payload=payload, key=config.PRIVATE_KEY, algorithm="ES256", headers=header)
     return token

@@ -7,11 +7,14 @@ from misc.config import config
 
 
 def build_json_result(reviews: List[Review]) -> str:
-    message = '{ "reviews" : ['
-    for review in reviews:
-        message += review.to_json() + ","
-    message = message[:-1]
-    message += "]}"
+    if reviews:
+        message = '{ "reviews" : ['
+        for review in reviews:
+            message += review.to_json() + ","
+        message = message[:-1]
+        message += "]}"
+    else:
+        message = ""
     return message
 
 

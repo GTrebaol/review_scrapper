@@ -20,13 +20,16 @@ def get_reviews() -> List[Review]:
         headers = {
             'Authorization': f'Bearer {token}'
         }
+        print(url)
         response = requests.get(url, headers=headers, proxies=config.PROXIES)
         print(response)
+        print(headers)
         response_dict = json.loads(response.text)
         for i in response_dict:
             print("key: ", i, "val: ", response_dict[i])
         if response.status_code != 200:
             print(f"Error retrieving reviews {response.status_code}")
+            finished=True
         else:
             response_reviews = response.json()
             for item in response_reviews['data']:

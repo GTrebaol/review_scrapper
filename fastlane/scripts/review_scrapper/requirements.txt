@@ -4,3 +4,4 @@ google-auth==2.32.0
 google-auth-httplib2==0.2.0
 requests==2.31.0
 PyJWT==2.8.0
+cryptography==43.0.0

@@ -88,7 +88,14 @@ def send_review_message(
         filename: str
 ):
     with open(filename) as file:
+        content = file.read().strip()
+        if not content:  # Vérifie si le contenu est vide
+            logging.info("Fichier vide, pas de notes à traiter")
+            return True
         result = json.loads(file.read())
+        if not result:  # Vérifie si le JSON est vide
+            logging.info("Fichier vide, pas de notes à traiter")
+            return True
         for review in result["reviews"]:
             thread_id = generate_thread_id(5)
             template_file = os.path.dirname(__file__) + "/template_review_ios.json"
