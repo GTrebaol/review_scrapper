@@ -43,10 +43,10 @@ if __name__ == "__main__":
     reviews = []
 
     if opts.ios:
-        print("Fetching iOs reviews.")
+        logging.info("Fetching iOs reviews.")
         reviews = ios_review.get_reviews()
     else:
-        print("Fetching Android reviews.")
+        logging.info("Fetching Android reviews.")
         reviews = android_review.get_reviews()
 
     with open(config.OUTPUT_FILE, 'w') as file:

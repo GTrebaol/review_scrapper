@@ -1,8 +1,9 @@
 # ios_reviews.py
 
-import requests
 import json
+import logging
 import re
+import requests
 from misc.review import Review
 from misc.utils import check_datetime_treshold, create_datetime_from_iso8601
 from misc.config import config
@@ -16,29 +17,26 @@ def get_reviews() -> List[Review]:
     reviews = []
     url = f'https://api.appstoreconnect.apple.com/v1/apps/{config.REPO_PACKAGE_NAME}/customerReviews?limit={config.REVIEWS_FETCH_QUANTITY}&sort=-createdDate'
     while not finished:
-        print("Calling Apple services...")
+        logging.info("Calling Apple services...")
         headers = {
             'Authorization': f'Bearer {token}'
         }
-        print(url)
         response = requests.get(url, headers=headers, proxies=config.PROXIES)
-        print(response)
-        print(headers)
-        response_dict = json.loads(response.text)
-        for i in response_dict:
-            print("key: ", i, "val: ", response_dict[i])
         if response.status_code != 200:
-            print(f"Error retrieving reviews {response.status_code}")
+            logging.error(f"Error retrieving reviews {response.status_code}")
             finished=True
         else:
             response_reviews = response.json()
-            for item in response_reviews['data']:
-                create_review(reviews=reviews, review_raw=item["attributes"])
-            finished = (len(reviews) < config.REVIEWS_FETCH_QUANTITY)
-            print(f"Fetched and kept {len(reviews)} reviews.")
-            print("We're done here." if finished else "Fetching the next batch.")
-            if not finished:
-                url = response_reviews["links"]["next"]
+            if 'data' not in response_reviews:
+                logging.info("No reviews")
+            else:
+                for item in response_reviews['data']:
+                    create_review(reviews=reviews, review_raw=item["attributes"])
+                finished = (len(reviews) < config.REVIEWS_FETCH_QUANTITY)
+                logging.info(f"Fetched and kept {len(reviews)} reviews.")
+                logging.info("We're done here." if finished else "Fetching the next batch.")
+                if not finished:
+                    url = response_reviews["links"]["next"]
     return reviews
 
 

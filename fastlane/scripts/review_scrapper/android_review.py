@@ -3,11 +3,12 @@
 import googleapiclient.discovery
 from google.oauth2 import service_account
 import json
+import logging
 import re
 from misc.review import Review
 from misc.config import config
-from typing import List
 from misc.utils import check_datetime_treshold, create_datetime_from_timestamp
+from typing import List
 
 
 def get_reviews() -> List[Review]:
@@ -15,17 +16,17 @@ def get_reviews() -> List[Review]:
     start_index = 0
     reviews = []
     while not finished:
-        print("Calling Google services...")
+        logging.info("Calling Google services...")
         response_reviews = download_review(start_index=start_index)
-        if not 'reviews' in response_reviews or len(response_reviews['reviews']) == 0:
-            print('No reviews')
+        if 'reviews' not in response_reviews or len(response_reviews['reviews']) == 0:
+            logging.info('No reviews')
             finished = True
         else:
             for item in response_reviews['reviews']:
                 create_review(reviews=reviews, review_raw=item)
             finished = (len(reviews) < config.REVIEWS_FETCH_QUANTITY)
-            print(f"Fetched and kept {len(reviews)} reviews.")
-            print("We're done here." if finished else "Fetching the next batch.")
+            logging.info(f"Fetched and kept {len(reviews)} reviews.")
+            logging.info("We're done here." if finished else "Fetching the next batch.")
             start_index += config.REVIEWS_FETCH_QUANTITY
     return reviews
 
@@ -38,7 +39,7 @@ def download_review(start_index: int) -> dict:
         return service.reviews().list(packageName=config.REPO_PACKAGE_NAME,
                                       maxResults=config.REVIEWS_FETCH_QUANTITY).execute()
     except Exception as e:
-        print(e)
+        logging.error(e)
         return {}
 
 

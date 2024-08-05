@@ -58,8 +58,6 @@ def send_card_message(google_chat_webhook_url: str, message_json: str):
     session = requests.session()
     session.proxies.update(proxy_settings)
     try:
-        print(message_json)
-        print(google_chat_webhook_url)
         response = session.post(
             url=google_chat_webhook_url,
             json=json.loads(message_json),
@@ -88,12 +86,9 @@ def send_review_message(
         filename: str
 ):
     with open(filename) as file:
-        content = file.read().strip()
-        if not content:  # Vérifie si le contenu est vide
-            logging.info("Fichier vide, pas de notes à traiter")
-            return True
         result = json.loads(file.read())
-        if not result:  # Vérifie si le JSON est vide
+        logging.info(result)
+        if not result or "reviews" not in result:  # Vérifie si le JSON est vide
             logging.info("Fichier vide, pas de notes à traiter")
             return True
         for review in result["reviews"]:
