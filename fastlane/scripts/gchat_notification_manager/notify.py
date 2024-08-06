@@ -85,36 +85,39 @@ def send_review_message(
         google_chat_webhook_url: str,
         filename: str
 ):
-    with open(filename) as file:
-        result = json.loads(file.read())
-        logging.info(result)
-        if not result or "reviews" not in result:  # Vérifie si le JSON est vide
-            logging.info("Fichier vide, pas de notes à traiter")
-            return True
-        for review in result["reviews"]:
-            thread_id = generate_thread_id(5)
-            template_file = os.path.dirname(__file__) + "/template_review_ios.json"
-            if review["os"] == "Android":
-                template_file = os.path.dirname(__file__) + "/template_review_android.json"
-            with open(template_file) as template:
-                google_chat_json = template.read()
-                google_chat_json = google_chat_json.replace("#author#", review['author_name'])
-                google_chat_json = google_chat_json.replace("#title#", review['title'])
-                google_chat_json = google_chat_json.replace("#note#", get_star_rating(review['rating']))
-                google_chat_json = google_chat_json.replace("#color#", "#0E3C68")
-                google_chat_json = google_chat_json.replace("#version#", review['version'])
-                google_chat_json = google_chat_json.replace("#version_code#", str(review['build_version']))
-                google_chat_json = google_chat_json.replace("#phone#", review['phone'])
-                google_chat_json = google_chat_json.replace("#threadId#", thread_id)
-                google_chat_url = google_chat_webhook_url
-
-                avatar_url = "https://static.vecteezy.com/system/resources/previews/021/496/287/non_2x/ios-icon-logo-software-apple-symbol-with-name-black-design-mobile-illustration-free-vector.jpg"
+    if not is_file_empty(filename):
+        with open(filename) as file:
+            result = json.loads(file.read())
+            logging.info(result)
+            if not result or "reviews" not in result:  # Vérifie si le JSON est vide
+                logging.info("Fichier vide, pas de notes à traiter")
+                return True
+            for review in result["reviews"]:
+                thread_id = generate_thread_id(5)
+                template_file = os.path.dirname(__file__) + "/template_review_ios.json"
                 if review["os"] == "Android":
-                    avatar_url = "https://static.vecteezy.com/ti/vecteur-libre/p2/14414701-logo-android-sur-fond-transparent-gratuit-vectoriel.jpg"
+                    template_file = os.path.dirname(__file__) + "/template_review_android.json"
+                with open(template_file) as template:
+                    google_chat_json = template.read()
+                    google_chat_json = google_chat_json.replace("#author#", review['author_name'])
+                    google_chat_json = google_chat_json.replace("#title#", review['title'])
+                    google_chat_json = google_chat_json.replace("#note#", get_star_rating(review['rating']))
+                    google_chat_json = google_chat_json.replace("#color#", "#0E3C68")
+                    google_chat_json = google_chat_json.replace("#version#", review['version'])
+                    google_chat_json = google_chat_json.replace("#version_code#", str(review['build_version']))
+                    google_chat_json = google_chat_json.replace("#phone#", review['phone'])
+                    google_chat_json = google_chat_json.replace("#threadId#", thread_id)
+                    google_chat_url = google_chat_webhook_url
 
-                google_chat_json = google_chat_json.replace("#avatar#", avatar_url)
-                google_chat_json = google_chat_json.replace("#content#", review["content"])
-                send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
+                    avatar_url = "https://static.vecteezy.com/system/resources/previews/021/496/287/non_2x/ios-icon-logo-software-apple-symbol-with-name-black-design-mobile-illustration-free-vector.jpg"
+                    if review["os"] == "Android":
+                        avatar_url = "https://static.vecteezy.com/ti/vecteur-libre/p2/14414701-logo-android-sur-fond-transparent-gratuit-vectoriel.jpg"
+
+                    google_chat_json = google_chat_json.replace("#avatar#", avatar_url)
+                    google_chat_json = google_chat_json.replace("#content#", review["content"])
+                    send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
+    else:
+        logging.info("Fichier vide, pas de notes à traiter")
 
 
 def get_star_rating(rating):
@@ -168,6 +171,9 @@ def send_delivery_message(
 
         send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
 
+
+def is_file_empty(filepath):
+    return os.stat(filepath).st_size == 0
 
 if __name__ == "__main__":
     if os.getenv("http_proxy") != "":
