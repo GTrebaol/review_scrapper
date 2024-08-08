@@ -14,7 +14,8 @@ class Config:
         self.JSON_KEY_DATA = os.getenv('JSON_KEY_DATA', 'DEFAULT_JSON_KEY_DATA')
         self.REPO_PACKAGE_NAME = os.getenv('REPO_PACKAGE_NAME', 'DEFAULT_APP_PACKAGE_ID')
         self.OUTPUT_FILE = os.getenv('OUTPUT_FILE', 'reviews.json')
-        self.TIMEDELTA_HOURS = int(os.getenv('TIMEDELTA_HOURS', 24))
+        self.TIMEDELTA_HOURS_ANDROID = int(os.getenv('TIMEDELTA_HOURS_ANDROID', 1))
+        self.TIMEDELTA_HOURS_IOS = int(os.getenv('TIMEDELTA_HOURS_IOS', 24))
         self.REVIEWS_FETCH_QUANTITY = 50
         self.DATETIME_FORMAT = "%d/%m/%y %H:%M:%S"
         self.PROXIES = {
