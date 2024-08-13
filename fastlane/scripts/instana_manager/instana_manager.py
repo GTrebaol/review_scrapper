@@ -154,6 +154,8 @@ class IosInstanaManager(InstanaManager):
             working_dir (str): The working directory where to find the debug symbols file and subfiles.
             dsyms_name (str): The dSYM content to upload.
         """
+        if not dsyms_name.endswith(".zip"):
+            dsyms_name.join(".zip")
         if not os.path.exists(f"{working_dir}/{dsyms_name}"):
             print(f"File not found: {working_dir}/{dsyms_name}")
             return
@@ -227,7 +229,7 @@ class AndroidInstanaManager(InstanaManager):
                 "tar",
                 "-czf",
                 f"{working_dir}/{file_name}.tgz",
-                f"{working_dir}/{file_name}",
+                f"{working_dir}/{file_name}.txt",
             ]
         )
 
@@ -309,26 +311,20 @@ def main():
             }
         )
 
-    if args.upload_android is not None:
-        filename = args.upload_android[1]
-        if not filename.endswith('.txt'):
-            filename = filename + ".txt"
+    if args.upload_android != None:
         android_instana_manager = AndroidInstanaManager()
         android_instana_manager.process_r8pg_map(
             args.upload_android[0],
-            filename,
+            args.upload_android[1],
             args.upload_android[2],
             args.upload_android[3],
             args.upload_android[4],
         )
-    elif args.upload_ios is not None:
-        filename = args.upload_ios[1]
-        if not filename.endswith('.zip'):
-            filename = filename + ".zip"
+    elif args.upload_ios != None:
         ios_instana_manager = IosInstanaManager()
         ios_instana_manager.process_dsyms(
             args.upload_ios[0],
-            filename,
+            args.upload_ios[1],
             args.upload_ios[2],
             args.upload_ios[3],
             args.upload_ios[4],
