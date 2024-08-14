@@ -32,7 +32,7 @@ module Fastlane
         params = " -w '#{webhook_url}'"
 
         if is_delivery
-            params += " -d '#{is_delivery}' -a '#{name}' -e '#{build_env}' -b '#{build_branch}' -v '#{version}' -r '#{extra_link}' -p '#{os_icon_url}'"
+            params += " -d '#{is_delivery}' -a '#{name}' -e '#{build_env}' -b '#{build_branch}' -v '#{version}' -l '#{extra_link}' -p '#{os_icon_url}'"
         else
             if is_review
                 params += " -f '#{file_path}' -r true"
