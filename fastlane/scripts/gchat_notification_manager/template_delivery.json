@@ -1,0 +1,54 @@
+{
+  "cardsV2": [
+    {
+      "cardId": "delivery",
+      "card": {
+        "sections": [
+          {
+            "header": "Infos",
+            "widgets": [
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>APP :</b> #app#</font>",
+                  "startIcon": {
+                    "iconUrl": "#img#"
+                  }
+                }
+              },
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>ENV :</b> #env#</font>",
+                  "startIcon": {
+                    "iconUrl": "https://cdn-icons-png.flaticon.com/512/1598/1598431.png"
+                  }
+                }
+              },
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>Branche :</b> #branch#</font>",
+                  "startIcon": {
+                    "iconUrl": "https://cdn-icons-png.flaticon.com/512/4908/4908200.png"
+                  }
+                }
+              },
+              {
+                "decoratedText": {
+                  "text": "<font color=\"#color#\"><b>Version :</b> #version#</font>",
+                  "startIcon": {
+                    "iconUrl": "https://cdn-icons-png.flaticon.com/512/6008/6008549.png"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "header": {
+          "title": "#title#",
+          "imageType": "SQUARE",
+          "imageUrl": "#platform#",
+          "imageAltText": "Delivering...!"
+        }
+      }
+    }
+  ]
+}

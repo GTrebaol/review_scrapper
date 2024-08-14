@@ -154,14 +154,16 @@ class IosInstanaManager(InstanaManager):
             working_dir (str): The working directory where to find the debug symbols file and subfiles.
             dsyms_name (str): The dSYM content to upload.
         """
-        if not os.path.exists(f"{working_dir}/{dsyms_name}.zip"):
-            print(f"File not found: {working_dir}/{dsyms_name}.zip")
+        if not dsyms_name.endswith(".zip"):
+            dsyms_name.join(".zip")
+        if not os.path.exists(f"{working_dir}/{dsyms_name}"):
+            print(f"File not found: {working_dir}/{dsyms_name}")
             return
         subprocess.run(
             [
                 "unzip",
                 "-q",
-                f"{working_dir}/{dsyms_name}.zip",
+                f"{working_dir}/{dsyms_name}",
                 "-d",
                 f"{working_dir}/{dsyms_name}",
             ]
