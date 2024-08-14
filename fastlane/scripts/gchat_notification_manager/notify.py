@@ -57,6 +57,7 @@ def send_card_message(google_chat_webhook_url: str, message_json: str):
     message_headers = {"Content-Type": "application/json"}
     session = requests.session()
     session.proxies.update(proxy_settings)
+    logging.info(message_json)
     try:
         response = session.post(
             url=google_chat_webhook_url,
