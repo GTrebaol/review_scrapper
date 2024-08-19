@@ -3,6 +3,7 @@ import os
 import re
 import requests
 import subprocess
+import logging
 
 
 class InstanaManager:
@@ -15,9 +16,9 @@ class InstanaManager:
         "instana_api_token": os.environ.get("INSTANA_HP_API_TOKEN"),
     }
 
-    @staticmethod
-    def __init__() -> None:
-        pass
+    def __init__(self) -> None:
+        self._logger = logging.getLogger()
+        self._logger.setLevel(logging.INFO)
 
     def split_file(self, working_dir, file_name):
         """Split a given file to subfiles of 9MB.
@@ -75,8 +76,8 @@ class InstanaManager:
                     headers=headers,
                     files=files,
                 )
-                print(
-                    f"upload_multiple_dsyms {working_dir_file_name}: {response.status_code}"
+                self._logger.info(
+                    f"upload_file {working_dir_file_name}: {response.status_code}"
                 )
                 splitted_file_number += 1
 
@@ -103,7 +104,7 @@ class InstanaManager:
             headers=headers,
             files=files,
         )
-        print(f"commit_upload_dsyms: {response.status_code}")
+        self._logger.info(f"commit_upload_dsyms: {response.status_code}")
 
     def process_file(
         self,
@@ -157,7 +158,7 @@ class IosInstanaManager(InstanaManager):
         if not dsyms_name.endswith(".zip"):
             dsyms_name.join(".zip")
         if not os.path.exists(f"{working_dir}/{dsyms_name}"):
-            print(f"File not found: {working_dir}/{dsyms_name}")
+            super()._logger.error(f"File not found: {working_dir}/{dsyms_name}")
             return
         subprocess.run(
             [
