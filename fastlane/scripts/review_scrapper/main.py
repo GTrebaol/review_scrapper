@@ -1,12 +1,16 @@
 # main.py
 
-import optparse
 import logging
-from misc.config import config
-import ios_review
-import android_review
-from misc.utils import build_json_result
+import optparse
+
 import httplib2
+
+import android_review
+import ios_review
+from misc.config import config
+from misc.utils import build_json_result
+
+logging.basicConfig(level=logging.INFO)
 
 """
 # Génération d'un fichier json contenant les notes et commentaires store des applications android et ios
@@ -27,11 +31,7 @@ Optionnelles :
 
 """
 
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 httplib2.debuglevel = 4
-
 
 if __name__ == "__main__":
     options = optparse.OptionParser(usage="%prog [options]", description="gSender")
@@ -51,10 +51,10 @@ if __name__ == "__main__":
     reviews = []
 
     if opts.ios:
-        logger.info("Fetching iOs reviews.")
+        logging.info("Fetching iOs reviews.")
         reviews = ios_review.get_reviews()
     else:
-        logger.info("Fetching Android reviews.")
+        logging.info("Fetching Android reviews.")
         reviews = android_review.get_reviews()
 
     with open(config.OUTPUT_FILE, "w") as file:

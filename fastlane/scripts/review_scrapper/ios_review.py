@@ -1,17 +1,17 @@
 # ios_reviews.py
 
-import json
 import logging
 import re
-import requests
-from misc.review import Review
-from misc.utils import check_datetime_treshold, create_datetime_from_iso8601
-from misc.config import config
-from misc.token_generator import create_token
 from typing import List
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+import requests
+
+from misc.config import config
+from misc.review import Review
+from misc.token_generator import create_token
+from misc.utils import check_datetime_treshold, create_datetime_from_iso8601
+
+logging.basicConfig(level=logging.INFO)
 
 
 def get_reviews() -> List[Review]:
@@ -20,22 +20,22 @@ def get_reviews() -> List[Review]:
     reviews = []
     url = f"https://api.appstoreconnect.apple.com/v1/apps/{config.REPO_PACKAGE_NAME}/customerReviews?limit={config.REVIEWS_FETCH_QUANTITY}&sort=-createdDate"
     while not finished:
-        logger.info("Calling Apple services...")
+        logging.info("Calling Apple services...")
         headers = {"Authorization": f"Bearer {token}"}
         response = requests.get(url, headers=headers, proxies=config.PROXIES)
         if response.status_code != 200:
-            logger.error(f"Error retrieving reviews {response.status_code}")
+            logging.error(f"Error retrieving reviews {response.status_code}")
             finished = True
         else:
             response_reviews = response.json()
             if "data" not in response_reviews:
-                logger.info("No reviews")
+                logging.info("No reviews")
             else:
                 for item in response_reviews["data"]:
                     create_review(reviews=reviews, review_raw=item["attributes"])
                 finished = len(reviews) < config.REVIEWS_FETCH_QUANTITY
-                logger.info(f"Fetched and kept {len(reviews)} reviews.")
-                logger.info(
+                logging.info(f"Fetched and kept {len(reviews)} reviews.")
+                logging.info(
                     "We're done here." if finished else "Fetching the next batch."
                 )
                 if not finished:

@@ -57,3 +57,8 @@ lane :process_gitlab_release do |params|
         app_version: app_version
     )
 end
+
+lane :write_sonarqube_result_in_mr do |params|
+    project_name = params[:project_name]
+    sonarqube_decoration(project_name: project_name)
+end

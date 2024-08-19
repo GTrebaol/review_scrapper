@@ -1,7 +1,10 @@
-import requests
 import argparse
-import os
 import logging
+import os
+
+import requests
+
+logging.basicConfig(level=logging.INFO)
 
 
 class GitlabReleaseManager:
@@ -11,12 +14,11 @@ class GitlabReleaseManager:
         self._tag_name = tag_name
         self._app_name = app_name
         self._app_version = app_version
-        self._logger = logging.getLogger()
-        self._logger.setLevel(logging.INFO)
+        self._ci_job_token = os.environ.get("CI_JOB_TOKEN")
 
     def _search_for_release(self):
         headers = {
-            "JOB-TOKEN": os.environ.get("CI_JOB_TOKEN"),
+            "JOB-TOKEN": self._ci_job_token,
         }
         return requests.get(
             f"{self._base_url}/projects/{self._project_id}/releases/{self._tag_name}",
@@ -31,7 +33,7 @@ class GitlabReleaseManager:
         }
         headers = {
             "Content-Type": "application/json",
-            "JOB-TOKEN": os.environ.get("CI_JOB_TOKEN"),
+            "JOB-TOKEN": self._ci_job_token,
         }
         return requests.post(
             f"{self._base_url}/projects/{self._project_id}/releases",
@@ -50,11 +52,11 @@ class GitlabReleaseManager:
         else:
             new_release_data = current_release_data
             new_release_data["description"] = (
-                new_release_data["description"]
-                + f"\n- {self._app_name}: {self._app_version}"
+                    new_release_data["description"]
+                    + f"\n- {self._app_name}: {self._app_version}"
             )
             headers = {
-                "JOB-TOKEN": os.environ.get("CI_JOB_TOKEN"),
+                "JOB-TOKEN": self._ci_job_token,
             }
             return requests.put(
                 f"{self._base_url}/projects/{self._project_id}/releases/{self._tag_name}",
@@ -69,9 +71,9 @@ class GitlabReleaseManager:
             try:
                 response.raise_for_status()
             except requests.exceptions.HTTPError as exception:
-                self._logger.error(exception)
+                logging.error(exception)
                 return
-            self._logger.info(
+            logging.info(
                 f"Current release for tag {self._tag_name} updated with app {self._app_name} version: {self._app_version}"
             )
         else:
@@ -79,9 +81,9 @@ class GitlabReleaseManager:
             try:
                 response.raise_for_status()
             except requests.exceptions.HTTPError as exception:
-                self._logger.error(exception)
+                logging.error(exception)
                 return
-            self._logger.info(f"New release created for tag {self._tag_name}")
+            logging.info(f"New release created for tag {self._tag_name}")
 
 
 def main():

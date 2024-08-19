@@ -1,19 +1,18 @@
-import requests
 import json
 import logging
-import os
 import optparse
+import os
 import random
 import string
 
+import requests
+
 proxy_settings = {"http": "", "https": ""}
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 
 def get_text_from_file(filename: str) -> str:
-    result = ""
     with open(filename) as f:
         result = f.read()
     return result
@@ -45,12 +44,12 @@ def send_simple_message(google_chat_webhook_url: str, message: str) -> bool:
         if str(response.status_code).startswith("2"):
             return True
         else:
-            logger.error(
+            logging.error(
                 f"Erreur {str(response.status_code)} {str(response.text)}. Le message n'a pas pu être posté sur Google Chat."
             )
             return False
     except requests.RequestException as e:
-        logger.error(f"Impossible de poster le message sur Google Chat : {e.response}")
+        logging.error(f"Impossible de poster le message sur Google Chat : {e.response}")
         return False
 
 
@@ -58,7 +57,7 @@ def send_card_message(google_chat_webhook_url: str, message_json: str):
     message_headers = {"Content-Type": "application/json"}
     session = requests.session()
     session.proxies.update(proxy_settings)
-    logger.info(message_json)
+    logging.info(message_json)
     try:
         response = session.post(
             url=google_chat_webhook_url,
@@ -69,15 +68,15 @@ def send_card_message(google_chat_webhook_url: str, message_json: str):
         if str(response.status_code).startswith("2"):
             return True
         else:
-            logger.error(
+            logging.error(
                 f"Erreur {str(response.status_code)}. Le message n'a pas pu être posté sur Google Chat."
             )
-            logger.error(
+            logging.error(
                 f"Erreur {str(response.text)}. Le message n'a pas pu être posté sur Google Chat."
             )
             return False
     except requests.RequestException as e:
-        logger.error(f"Impossible de poster le message sur Google Chat : {e.response}")
+        logging.error(f"Impossible de poster le message sur Google Chat : {e.response}")
         return False
 
 
@@ -85,16 +84,16 @@ def send_review_message(google_chat_webhook_url: str, filename: str):
     if not is_file_empty(filename):
         with open(filename) as file:
             result = json.loads(file.read())
-            logger.info(result)
+            logging.info(result)
             if not result or "reviews" not in result:  # Vérifie si le JSON est vide
-                logger.info("Fichier vide, pas de notes à traiter")
+                logging.info("Fichier vide, pas de notes à traiter")
                 return True
             for review in result["reviews"]:
                 thread_id = generate_thread_id(5)
                 template_file = os.path.dirname(__file__) + "/template_review_ios.json"
                 if review["os"] == "Android":
                     template_file = (
-                        os.path.dirname(__file__) + "/template_review_android.json"
+                            os.path.dirname(__file__) + "/template_review_android.json"
                     )
                 with open(template_file) as template:
                     google_chat_json = template.read()
@@ -133,7 +132,7 @@ def send_review_message(google_chat_webhook_url: str, filename: str):
                         message_json=google_chat_json,
                     )
     else:
-        logger.info("Fichier vide, pas de notes à traiter")
+        logging.info("Fichier vide, pas de notes à traiter")
 
 
 def get_star_rating(rating):
@@ -145,15 +144,15 @@ def get_star_rating(rating):
 
 
 def send_delivery_message(
-    google_chat_webhook_url: str,
-    title: str,
-    app: str,
-    branch: str,
-    version: str,
-    link: str,
-    image_url: str,
-    env: str,
-    platform: str,
+        google_chat_webhook_url: str,
+        title: str,
+        app: str,
+        branch: str,
+        version: str,
+        link: str,
+        image_url: str,
+        env: str,
+        platform: str,
 ):
     # color by env
     if env == "REC":

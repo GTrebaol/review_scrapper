@@ -6,7 +6,7 @@ module Fastlane
           tag_name = params[:tag_name]
           app_name = params[:app_name]
           app_version = params[:app_version]
-          sh("python3 fastlane/#{ENV["FASTLANE_CACHE_IMPORT_PATH"]}/phenix-indus.git/fastlane/phenix-tools/scripts/gitlab_release_manager/gitlab_release_manager.py -p #{project_id} #{tag_name} \"#{app_name}\" #{app_version}")
+          sh("python3 fastlane/#{ENV["FASTLANE_CACHE_IMPORT_PATH"]}/mobile.git/fastlane/scripts/gitlab_release_manager/gitlab_release_manager.py -p #{project_id} #{tag_name} \"#{app_name}\" #{app_version}")
         end
   
         def self.description
