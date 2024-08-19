@@ -11,6 +11,7 @@ proxy_settings = {"http": "", "https": ""}
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def get_text_from_file(filename: str) -> str:
     result = ""
     with open(filename) as f:
@@ -20,7 +21,7 @@ def get_text_from_file(filename: str) -> str:
 
 def generate_thread_id(length):
     letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(length))
+    return "".join(random.choice(letters) for i in range(length))
 
 
 def send_simple_message(google_chat_webhook_url: str, message: str) -> bool:
@@ -44,12 +45,12 @@ def send_simple_message(google_chat_webhook_url: str, message: str) -> bool:
         if str(response.status_code).startswith("2"):
             return True
         else:
-            logging.error(
+            logger.error(
                 f"Erreur {str(response.status_code)} {str(response.text)}. Le message n'a pas pu être posté sur Google Chat."
             )
             return False
     except requests.RequestException as e:
-        logging.error(f"Impossible de poster le message sur Google Chat : {e.response}")
+        logger.error(f"Impossible de poster le message sur Google Chat : {e.response}")
         return False
 
 
@@ -57,7 +58,7 @@ def send_card_message(google_chat_webhook_url: str, message_json: str):
     message_headers = {"Content-Type": "application/json"}
     session = requests.session()
     session.proxies.update(proxy_settings)
-    logging.info(message_json)
+    logger.info(message_json)
     try:
         response = session.post(
             url=google_chat_webhook_url,
@@ -68,45 +69,54 @@ def send_card_message(google_chat_webhook_url: str, message_json: str):
         if str(response.status_code).startswith("2"):
             return True
         else:
-            logging.error(
+            logger.error(
                 f"Erreur {str(response.status_code)}. Le message n'a pas pu être posté sur Google Chat."
             )
-            logging.error(
+            logger.error(
                 f"Erreur {str(response.text)}. Le message n'a pas pu être posté sur Google Chat."
             )
             return False
     except requests.RequestException as e:
-        logging.error(
-            f"Impossible de poster le message sur Google Chat : {e.response}"
-        )
+        logger.error(f"Impossible de poster le message sur Google Chat : {e.response}")
         return False
 
 
-def send_review_message(
-        google_chat_webhook_url: str,
-        filename: str
-):
+def send_review_message(google_chat_webhook_url: str, filename: str):
     if not is_file_empty(filename):
         with open(filename) as file:
             result = json.loads(file.read())
-            logging.info(result)
+            logger.info(result)
             if not result or "reviews" not in result:  # Vérifie si le JSON est vide
-                logging.info("Fichier vide, pas de notes à traiter")
+                logger.info("Fichier vide, pas de notes à traiter")
                 return True
             for review in result["reviews"]:
                 thread_id = generate_thread_id(5)
                 template_file = os.path.dirname(__file__) + "/template_review_ios.json"
                 if review["os"] == "Android":
-                    template_file = os.path.dirname(__file__) + "/template_review_android.json"
+                    template_file = (
+                        os.path.dirname(__file__) + "/template_review_android.json"
+                    )
                 with open(template_file) as template:
                     google_chat_json = template.read()
-                    google_chat_json = google_chat_json.replace("#author#", review['author_name'])
-                    google_chat_json = google_chat_json.replace("#title#", review['title'])
-                    google_chat_json = google_chat_json.replace("#note#", get_star_rating(review['rating']))
+                    google_chat_json = google_chat_json.replace(
+                        "#author#", review["author_name"]
+                    )
+                    google_chat_json = google_chat_json.replace(
+                        "#title#", review["title"]
+                    )
+                    google_chat_json = google_chat_json.replace(
+                        "#note#", get_star_rating(review["rating"])
+                    )
                     google_chat_json = google_chat_json.replace("#color#", "#0E3C68")
-                    google_chat_json = google_chat_json.replace("#version#", review['version'])
-                    google_chat_json = google_chat_json.replace("#version_code#", str(review['build_version']))
-                    google_chat_json = google_chat_json.replace("#phone#", review['phone'])
+                    google_chat_json = google_chat_json.replace(
+                        "#version#", review["version"]
+                    )
+                    google_chat_json = google_chat_json.replace(
+                        "#version_code#", str(review["build_version"])
+                    )
+                    google_chat_json = google_chat_json.replace(
+                        "#phone#", review["phone"]
+                    )
                     google_chat_json = google_chat_json.replace("#threadId#", thread_id)
                     google_chat_url = google_chat_webhook_url
 
@@ -115,10 +125,15 @@ def send_review_message(
                         avatar_url = "https://static.vecteezy.com/ti/vecteur-libre/p2/14414701-logo-android-sur-fond-transparent-gratuit-vectoriel.jpg"
 
                     google_chat_json = google_chat_json.replace("#avatar#", avatar_url)
-                    google_chat_json = google_chat_json.replace("#content#", review["content"])
-                    send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
+                    google_chat_json = google_chat_json.replace(
+                        "#content#", review["content"]
+                    )
+                    send_card_message(
+                        google_chat_webhook_url=google_chat_url,
+                        message_json=google_chat_json,
+                    )
     else:
-        logging.info("Fichier vide, pas de notes à traiter")
+        logger.info("Fichier vide, pas de notes à traiter")
 
 
 def get_star_rating(rating):
@@ -130,15 +145,15 @@ def get_star_rating(rating):
 
 
 def send_delivery_message(
-        google_chat_webhook_url: str,
-        title: str,
-        app: str,
-        branch: str,
-        version: str,
-        link: str,
-        image_url: str,
-        env: str,
-        platform: str,
+    google_chat_webhook_url: str,
+    title: str,
+    app: str,
+    branch: str,
+    version: str,
+    link: str,
+    image_url: str,
+    env: str,
+    platform: str,
 ):
     # color by env
     if env == "REC":
@@ -170,11 +185,14 @@ def send_delivery_message(
         google_chat_json = google_chat_json.replace("#version#", f"{version}")
         google_chat_url = google_chat_webhook_url
 
-        send_card_message(google_chat_webhook_url=google_chat_url, message_json=google_chat_json)
+        send_card_message(
+            google_chat_webhook_url=google_chat_url, message_json=google_chat_json
+        )
 
 
 def is_file_empty(filepath):
     return os.stat(filepath).st_size == 0
+
 
 if __name__ == "__main__":
     if os.getenv("http_proxy") != "":
@@ -185,30 +203,39 @@ if __name__ == "__main__":
 
     options = optparse.OptionParser(usage="%prog [options]", description="gSender")
 
-    options.add_option("-d", "--delivery", type="str", default="false", help="is an app delivery")
-    options.add_option("-m", "--message", type="str", default="false", help="message content")
-    options.add_option("-w", "--webhook", type="str", default="webhook", help="webhook url")
+    options.add_option(
+        "-d", "--delivery", type="str", default="false", help="is an app delivery"
+    )
+    options.add_option(
+        "-m", "--message", type="str", default="false", help="message content"
+    )
+    options.add_option(
+        "-w", "--webhook", type="str", default="webhook", help="webhook url"
+    )
     options.add_option("-a", "--app", type="str", default="CMB", help="application")
     options.add_option("-e", "--env", type="str", default="REC", help="environment")
     options.add_option("-b", "--branch", type="str", default="Branch", help="branch")
     options.add_option("-v", "--version", type="str", default="Version", help="version")
-    options.add_option("-l", "--link", type="str", default="Extra link", help="Extra link")
+    options.add_option(
+        "-l", "--link", type="str", default="Extra link", help="Extra link"
+    )
     options.add_option("-i", "--image", type="str", default="", help="add image")
     options.add_option("-p", "--platform", type="str", default="", help="add os img")
-    options.add_option("-f", "--file", type="str", default="", help="get text from file")
+    options.add_option(
+        "-f", "--file", type="str", default="", help="get text from file"
+    )
     options.add_option("-r", "--review", type="str", default="false", help="thread id")
     options.add_option("-t", "--title", type="str", default="Livraison", help="title")
 
     opts, args = options.parse_args()
     if opts.delivery != "true":
         if opts.review != "false" and opts.file != "":
-            send_review_message(google_chat_webhook_url=opts.webhook, filename=opts.file)
+            send_review_message(
+                google_chat_webhook_url=opts.webhook, filename=opts.file
+            )
         else:
             message = opts.message
-            send_simple_message(
-                google_chat_webhook_url=opts.webhook,
-                message=message
-            )
+            send_simple_message(google_chat_webhook_url=opts.webhook, message=message)
     else:
         send_delivery_message(
             google_chat_webhook_url=opts.webhook,

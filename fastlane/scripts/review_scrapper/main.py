@@ -36,18 +36,26 @@ httplib2.debuglevel = 4
 if __name__ == "__main__":
     options = optparse.OptionParser(usage="%prog [options]", description="gSender")
 
-    options.add_option("-i", "--ios", action="store_true", dest="ios", help="scrapping ios review")
-    options.add_option("-a", "--android", action="store_false", dest="ios", help="scrapping android review")
+    options.add_option(
+        "-i", "--ios", action="store_true", dest="ios", help="scrapping ios review"
+    )
+    options.add_option(
+        "-a",
+        "--android",
+        action="store_false",
+        dest="ios",
+        help="scrapping android review",
+    )
 
     opts, args = options.parse_args()
     reviews = []
 
     if opts.ios:
-        logging.info("Fetching iOs reviews.")
+        logger.info("Fetching iOs reviews.")
         reviews = ios_review.get_reviews()
     else:
-        logging.info("Fetching Android reviews.")
+        logger.info("Fetching Android reviews.")
         reviews = android_review.get_reviews()
 
-    with open(config.OUTPUT_FILE, 'w') as file:
+    with open(config.OUTPUT_FILE, "w") as file:
         file.write(build_json_result(reviews=reviews))
