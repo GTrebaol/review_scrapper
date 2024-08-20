@@ -44,3 +44,21 @@ lane :notification_gchat do |params|
         os_icon_url: os_icon_url
     )
 end
+
+lane :process_gitlab_release do |params|
+    project_id = params[:project_id]
+    tag_name = params[:tag_name]
+    app_name = params[:app_name]
+    app_version = params[:app_version]
+    gitlab_release_manager(
+        project_id: project_id, 
+        tag_name: tag_name,
+        app_name: app_name,
+        app_version: app_version
+    )
+end
+
+lane :write_sonarqube_result_in_mr do |params|
+    project_name = params[:project_name]
+    sonarqube_decoration(project_name: project_name)
+end

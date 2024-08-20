@@ -1,8 +1,12 @@
 import argparse
+import logging
 import os
 import re
-import requests
 import subprocess
+
+import requests
+
+logging.basicConfig(level=logging.INFO)
 
 
 class InstanaManager:
@@ -15,8 +19,7 @@ class InstanaManager:
         "instana_api_token": os.environ.get("INSTANA_HP_API_TOKEN"),
     }
 
-    @staticmethod
-    def __init__() -> None:
+    def __init__(self) -> None:
         pass
 
     def split_file(self, working_dir, file_name):
@@ -37,13 +40,13 @@ class InstanaManager:
         )
 
     def upload_file(
-        self,
-        working_dir,
-        file_name,
-        file_id,
-        file_type,
-        config_id,
-        sourcemap_upload_id,
+            self,
+            working_dir,
+            file_name,
+            file_id,
+            file_type,
+            config_id,
+            sourcemap_upload_id,
     ):
         """Upload subfiles of 9MB to a given Instana project.
 
@@ -75,8 +78,8 @@ class InstanaManager:
                     headers=headers,
                     files=files,
                 )
-                print(
-                    f"upload_multiple_dsyms {working_dir_file_name}: {response.status_code}"
+                logging.info(
+                    f"upload_file {working_dir_file_name}: {response.status_code}"
                 )
                 splitted_file_number += 1
 
@@ -103,16 +106,16 @@ class InstanaManager:
             headers=headers,
             files=files,
         )
-        print(f"commit_upload_dsyms: {response.status_code}")
+        logging.info(f"commit_upload_dsyms: {response.status_code}")
 
     def process_file(
-        self,
-        working_dir,
-        file_name,
-        file_id,
-        file_type,
-        config_id,
-        sourcemap_upload_id,
+            self,
+            working_dir,
+            file_name,
+            file_id,
+            file_type,
+            config_id,
+            sourcemap_upload_id,
     ):
         """Upload debug symbols to an Instana project.
 
@@ -157,7 +160,7 @@ class IosInstanaManager(InstanaManager):
         if not dsyms_name.endswith(".zip"):
             dsyms_name.join(".zip")
         if not os.path.exists(f"{working_dir}/{dsyms_name}"):
-            print(f"File not found: {working_dir}/{dsyms_name}")
+            logging.error(f"File not found: {working_dir}/{dsyms_name}")
             return
         subprocess.run(
             [
@@ -178,12 +181,12 @@ class IosInstanaManager(InstanaManager):
         )
 
     def process_dsyms(
-        self,
-        working_dir,
-        file_name,
-        file_id,
-        config_id,
-        sourcemap_upload_id,
+            self,
+            working_dir,
+            file_name,
+            file_id,
+            config_id,
+            sourcemap_upload_id,
     ):
         """Upload dSYM files to an Instana project.
 
@@ -234,12 +237,12 @@ class AndroidInstanaManager(InstanaManager):
         )
 
     def process_r8pg_map(
-        self,
-        working_dir,
-        file_name,
-        file_id,
-        config_id,
-        sourcemap_upload_id,
+            self,
+            working_dir,
+            file_name,
+            file_id,
+            config_id,
+            sourcemap_upload_id,
     ):
         """Upload mapping file to an Instana project.
 
@@ -311,7 +314,7 @@ def main():
             }
         )
 
-    if args.upload_android != None:
+    if args.upload_android is not None:
         android_instana_manager = AndroidInstanaManager()
         android_instana_manager.process_r8pg_map(
             args.upload_android[0],
@@ -320,7 +323,7 @@ def main():
             args.upload_android[3],
             args.upload_android[4],
         )
-    elif args.upload_ios != None:
+    elif args.upload_ios is not None:
         ios_instana_manager = IosInstanaManager()
         ios_instana_manager.process_dsyms(
             args.upload_ios[0],
