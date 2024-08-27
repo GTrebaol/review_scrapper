@@ -6,7 +6,14 @@ module Fastlane
           tag_name = params[:tag_name]
           app_name = params[:app_name]
           app_version = params[:app_version]
-          sh("python3 fastlane/#{ENV["FASTLANE_CACHE_IMPORT_PATH"]}/mobile.git/fastlane/scripts/gitlab_release_manager/gitlab_release_manager.py -p #{project_id} #{tag_name} \"#{app_name}\" #{app_version}")
+          description = params[:description]
+          if description.nil? || description == ""
+            extra_option = ""
+          else
+            description = description.gsub("'", " ")
+            extra_option = "-d '#{description}'"
+          end
+          sh("python3 fastlane/#{ENV["FASTLANE_CACHE_IMPORT_PATH"]}/mobile.git/fastlane/scripts/gitlab_release_manager/gitlab_release_manager.py -p #{project_id} #{tag_name} \"#{app_name}\" #{app_version} #{extra_option}")
         end
   
         def self.description
@@ -43,6 +50,11 @@ module Fastlane
                                  description: "The app version delivered",
                                     optional: false,
                                         type: String),
+            FastlaneCore::ConfigItem.new(key: :description,
+                                    env_name: "DO_MOBILE_TOOLS_DESCRIPTION",
+                                 description: "Optional release description",
+                                    optional: true,
+                                        type: String)
           ]
         end
   

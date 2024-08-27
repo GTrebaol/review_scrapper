@@ -8,13 +8,14 @@ logging.basicConfig(level=logging.INFO)
 
 
 class GitlabReleaseManager:
-    def __init__(self, project_id, tag_name, app_name, app_version) -> None:
+    def __init__(self, project_id, tag_name, app_name, app_version, description) -> None:
         self._base_url = f"https://gitlark.s.arkea.com/api/v4"
         self._project_id = project_id
         self._tag_name = tag_name
         self._app_name = app_name
         self._app_version = app_version
         self._ci_job_token = os.environ.get("CI_JOB_TOKEN")
+        self.description = description
 
     def _search_for_release(self):
         headers = {
@@ -26,10 +27,14 @@ class GitlabReleaseManager:
         )
 
     def _create_release(self):
+        if self.description is not None:
+            description_data = self.description
+        else:
+            description_data = f"- {self._app_name}: {self._app_version}"
         new_release_data = {
             "name": f"Release {self._tag_name}",
             "tag_name": self._tag_name,
-            "description": f"- {self._app_name}: {self._app_version}",
+            "description": description_data,
         }
         headers = {
             "Content-Type": "application/json",
@@ -51,10 +56,12 @@ class GitlabReleaseManager:
             return fake_response
         else:
             new_release_data = current_release_data
-            new_release_data["description"] = (
-                    new_release_data["description"]
-                    + f"\n- {self._app_name}: {self._app_version}"
-            )
+            if self.description is not None:
+                description_data = self.description
+            else:
+                description_data = new_release_data["description"] + f"\n- {self._app_name}: {self._app_version}"
+
+            new_release_data["description"] = description_data
             headers = {
                 "JOB-TOKEN": self._ci_job_token,
             }
@@ -99,6 +106,14 @@ def main():
         default=None,
         help="¨Process a release based on a tag.",
     )
+    parser.add_argument(
+        '-d',
+        '--description',
+        type=str,
+        help="Add a custom description",
+        default=None
+    )
+
     args = parser.parse_args()
     if args.process:
         gitlab_release_manager = GitlabReleaseManager(
@@ -106,6 +121,7 @@ def main():
             args.process[1],
             args.process[2],
             args.process[3],
+            args.description,
         )
         gitlab_release_manager.process_release()
     else:

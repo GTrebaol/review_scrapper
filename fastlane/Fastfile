@@ -50,11 +50,13 @@ lane :process_gitlab_release do |params|
     tag_name = params[:tag_name]
     app_name = params[:app_name]
     app_version = params[:app_version]
+    description = params[:description]
     gitlab_release_manager(
         project_id: project_id, 
         tag_name: tag_name,
         app_name: app_name,
-        app_version: app_version
+        app_version: app_version,
+        description: description
     )
 end
 
