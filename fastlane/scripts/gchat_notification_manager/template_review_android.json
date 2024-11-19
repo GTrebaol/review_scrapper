@@ -17,9 +17,18 @@
               {
                 "decoratedText": {
                   "icon": {
+                    "knownIcon": "EVENT_SEAT"
+                  },
+                  "topLabel": "Version Android",
+                  "text": "#os_version#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
                     "knownIcon": "FLIGHT_DEPARTURE"
                   },
-                  "topLabel": "Version",
+                  "topLabel": "Version App",
                   "text": "#version#"
                 }
               },

@@ -117,6 +117,9 @@ def send_review_message(google_chat_webhook_url: str, filename: str):
                         "#phone#", review["phone"]
                     )
                     google_chat_json = google_chat_json.replace("#threadId#", thread_id)
+                    google_chat_json = google_chat_json.replace(
+                        "#os_version#", review["os_version"]
+                    )
                     google_chat_url = google_chat_webhook_url
 
                     avatar_url = "https://static.vecteezy.com/system/resources/previews/021/496/287/non_2x/ios-icon-logo-software-apple-symbol-with-name-black-design-mobile-illustration-free-vector.jpg"

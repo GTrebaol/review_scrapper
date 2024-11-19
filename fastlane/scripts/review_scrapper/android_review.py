@@ -15,6 +15,36 @@ from misc.utils import check_datetime_treshold, create_datetime_from_timestamp
 logging.basicConfig(level=logging.INFO)
 
 
+# Table de mappage Android SDK versions et numéros de version Android
+android_sdk_mapping = {
+    14: "Android 4",
+    15: "Android 4.0.3 – 4.0.4",
+    16: "Android 4.1",
+    17: "Android 4.2",
+    18: "Android 4.3",
+    19: "Android 4.4",
+    20: "Android 4.4W",
+    21: "Android 5",
+    22: "Android 5.1",
+    23: "Android 6",
+    24: "Android 7",
+    25: "Android 7.1",
+    26: "Android 8",
+    27: "Android 8.1",
+    28: "Android 9",
+    29: "Android 10",
+    30: "Android 11",
+    31: "Android 12",
+    32: "Android 12L",
+    33: "Android 13",
+    34: "Android 14",
+    35: "Android 15",
+}
+
+# Fonction pour récupérer la version Android à partir d'un numéro de SDK
+def get_android_version(sdk_version):
+    return android_sdk_mapping.get(sdk_version, f"Version inconnue : {sdk_version} ")
+
 def get_reviews() -> List[Review]:
     finished = False
     start_index = 0
@@ -66,6 +96,7 @@ def create_review(reviews: List[Review], review_raw: dict):
     version_code = "-"
     phone = "-"
     author_name = "Monsieur Untel"
+    version_android = "Version inconnue"
     if "appVersionName" in comment:
         version = comment["appVersionName"]
     if "deviceMetadata" in comment:
@@ -74,6 +105,9 @@ def create_review(reviews: List[Review], review_raw: dict):
         version_code = comment["appVersionCode"]
     if "authorName" in review_raw:
         author_name = review_raw["authorName"]
+    if "androidOsVersion" in comment:
+        version_android = get_android_version(comment["androidOsVersion"])
+
     review = Review(
         os="Android",
         author_name=author_name,
@@ -85,6 +119,7 @@ def create_review(reviews: List[Review], review_raw: dict):
         ),
         version=version,
         build_version=version_code,
+        os_version=version_android,
         phone=phone,
         title="",
     )

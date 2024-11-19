@@ -17,6 +17,7 @@ class Review:
         build_version,
         phone,
         truncated_comment,
+        os_version
     ):
         self.os = os
         self.author_name = author_name
@@ -28,6 +29,7 @@ class Review:
         self.version = version
         self.build_version = build_version
         self.phone = phone
+        self.os_version = os_version
 
     def to_json(self):
         serializable_object = self
