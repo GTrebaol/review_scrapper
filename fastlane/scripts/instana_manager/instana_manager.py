@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import os
 import re
@@ -29,6 +30,10 @@ class InstanaManager:
             working_dir (str): The working directory where to find the debug symbols file and subfiles.
             file_name (str): The debug symbols file name.
         """
+        file_path = os.path.join(working_dir, f"{file_name}.tgz")
+        if os.path.getsize(file_path) / (1024 * 1024) < self.MAX_FILE_SIZE:
+            logging.info("File size is within the allowed limit, skipping split.")
+            return
         subprocess.run(
             [
                 "split",
@@ -137,6 +142,122 @@ class InstanaManager:
             sourcemap_upload_id,
         )
         self.commit_upload_file(file_id, file_type, config_id, sourcemap_upload_id)
+
+    def process_data(self,
+                     data_type,
+                     app,
+                     timeframe
+                     ):
+        """Fetch data and build a json file depending on the metrics wanted
+
+        Args:
+            data_type (str): type of instana data needed (crash_list only atm)
+            app (str): Instana mobile app name
+            timeframe (str): windows size of the data wanted in ms (one hour = 3600000)
+        """
+        match (data_type):
+            case "crash_list":
+                self.process_data_crash_list(app, timeframe)
+            case _:
+                logging.info("Data type inconnu (crash_list")
+
+    def process_data_crash_list(self,
+                                app_name,
+                                timeframe):
+        """Fetch top crash list of a given mobile app
+
+        Args:
+            app_name (str): Instana mobile app name
+            timeframe (str): windows size of the data wanted in ms (one hour = 3600000)
+        """
+
+        app_id = self.get_instana_app_id(app_name)
+        url_crash = self.INSTANA_CONFIGURATION.get(
+            "instana_url") + f"/#/mobileAppMonitoring/mobileApp;mobileAppId={app_id}/crashes"
+        with open(os.path.dirname(__file__) + "/json/get_crash_list.json") as file:
+            json_str = file.read()
+            json_str = json_str.replace('"#timeFrame#"', timeframe)
+            json_str = json_str.replace('#appName#', app_name)
+
+        response = self.call_instana_metrics(json_str).json()
+        top_crashes = sorted(
+            response["items"],
+            key=lambda x: x["metrics"]["beaconCount.sum"][0][1],
+            reverse=True
+        )[:5]
+        with open("crashes.json", "w") as file:
+            message = '{ "crashes" :' + json.dumps(
+                top_crashes) + ', "url": "' + url_crash + '", "appName": "' + app_name + '"}'
+            logging.info(message)
+            file.write(message)
+
+    def call_instana_metrics(self, data):
+        """Make a request on the beacon-groups of instana
+
+        Args:
+            data (dict): data json payload
+        """
+        url = "/api/mobile-app-monitoring/analyze/beacon-groups"
+        return self.call_instana_post(self.get_json_header(), url, data)
+
+    def call_instana_post(self, headers, url, data):
+        """Make a POST request to Instana
+
+        Args:
+            headers (dict): headers dict
+            url (str): url wanted without the instana base path
+            data (dict): data json payload
+        """
+
+        call_url = self.INSTANA_CONFIGURATION.get("instana_url") + url
+        try:
+            response = requests.post(call_url, headers=headers, data=data)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Error during POST request: {e}")
+            return None
+        logging.info(f"call_instana_post {url}: {response.status_code}")
+        return response
+
+    def call_instana_get(self, headers, url):
+        """Make a GET request to Instana
+
+        Args:
+           headers (dict): headers dict
+           url (str): url wanted without the instana base path
+        """
+        call_url = self.INSTANA_CONFIGURATION.get("instana_url") + url
+        try:
+            response = requests.get(call_url, headers=headers)
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Error during POST request: {e}")
+            return None
+        logging.info(f"call_instana_get {url}: {response.status_code}")
+        return response
+
+    def get_instana_app_id(self, app_name):
+        """Get instana mobile app ID from its name
+
+        Args:
+           app_name (str): displayed app name
+        """
+        url = "/api/mobile-app-monitoring/config"
+        response = self.call_instana_get(self.get_json_header(), url)
+        data = response.json()
+        app_id = None
+        if len(data) > 0:
+            for item in data:
+                if item['name'] == app_name:
+                    app_id = item['id']
+        return app_id
+
+    def get_json_header(self):
+        """Get json header for instana calls"""
+        api_token = self.INSTANA_CONFIGURATION.get("instana_api_token")
+        return {
+            "authorization": f"apiToken {api_token}",
+            "Content-Type": "application/json"
+        }
 
 
 class IosInstanaManager(InstanaManager):
@@ -304,7 +425,20 @@ def main():
         action="store_true",
         default=False,
         help="Will run for production environment",
-    ),
+    )
+    parser.add_argument(
+        "-d",
+        "--data",
+        type=str,
+        nargs=3,
+        metavar=(
+            "data_type",
+            "app_name",
+            "timeframe"
+        ),
+        default=None,
+        help="Get data about given app name (crash_list only atm)",
+    )
     args = parser.parse_args()
     if args.production:
         InstanaManager.INSTANA_CONFIGURATION.update(
@@ -331,6 +465,13 @@ def main():
             args.upload_ios[2],
             args.upload_ios[3],
             args.upload_ios[4],
+        )
+    elif args.data is not None:
+        instana_manager = InstanaManager()
+        instana_manager.process_data(
+            args.data[0],
+            args.data[1],
+            args.data[2],
         )
     else:
         parser.print_help()

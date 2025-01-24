@@ -77,3 +77,16 @@ lane :protect_gitlab_tag do |params|
         tag_name: tag_name
     )
 end
+
+lane :get_crash_list_instana do |params|
+    data_type = params[:data_type]
+    timeframe = params[:timeframe]
+    app_name = params[:app_name]
+    production = params[:production]
+    instana_manager_metrics(
+        app_name: app_name,
+        timeframe: timeframe,
+        production: production,
+        data_type: data_type
+    )
+end

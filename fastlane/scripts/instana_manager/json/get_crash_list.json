@@ -1,0 +1,24 @@
+{
+  "metrics": [
+    {
+      "metric": "beaconCount",
+      "aggregation": "SUM",
+      "beaconType": "crash"
+    }
+  ],
+  "group": {
+    "groupbyTag": "mobileBeacon.error.message"
+  },
+  "tagFilterExpression": {
+    "name": "mobileBeacon.mobileApp.name",
+    "type": "TAG_FILTER",
+    "value": "#appName#",
+    "entity": "NOT_APPLICABLE",
+    "operator": "EQUALS"
+  },
+  "timeFrame": {
+    "to": "null",
+    "windowSize": "#timeFrame#"
+  },
+  "type": "CRASH"
+}

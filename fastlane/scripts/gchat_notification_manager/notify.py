@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import logging
 import optparse
@@ -21,6 +22,15 @@ def get_text_from_file(filename: str) -> str:
 def generate_thread_id(length):
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(length))
+
+def convert_timestamp(timestamp_ms):
+    # Convertir le timestamp en secondes
+    timestamp_sec = timestamp_ms / 1000
+    # Convertir en objet datetime
+    date_time = datetime.fromtimestamp(timestamp_sec)
+    # Formater la date en chaîne de caractères
+    formatted_date = date_time.strftime('%Y-%m-%d %H:%M:%S')
+    return formatted_date
 
 
 def send_simple_message(google_chat_webhook_url: str, message: str) -> bool:
@@ -137,6 +147,42 @@ def send_review_message(google_chat_webhook_url: str, filename: str):
     else:
         logging.info("Fichier vide, pas de notes à traiter")
 
+def send_crash_list_message(google_chat_webhook_url: str, filename: str):
+    if not is_file_empty(filename):
+        with open(filename) as file:
+            result = json.loads(file.read())
+            logging.info(result)
+            if not result :  # Vérifie si le JSON est vide
+                logging.info("Fichier vide, pas de crash à traiter")
+                return True
+
+            template_file = os.path.dirname(__file__) + "/template_crash_list.json"
+            with open(template_file) as template:
+                google_chat_json = template.read()
+                for idx, crash in enumerate(result["crashes"]):
+                    google_chat_json = google_chat_json.replace(
+                        f"#crash-{idx}#", crash["name"].replace('"',"'")
+                    )
+                    google_chat_json = google_chat_json.replace(
+                        f"#earliest-{idx}#", convert_timestamp(crash["earliestTimestamp"])
+                    )
+                    google_chat_json = google_chat_json.replace(
+                        f"#occurences-{idx}#", str(int(crash["metrics"]["beaconCount.sum"][0][1]))
+                    )
+
+                google_chat_json = google_chat_json.replace(
+                    "#url-crash#", result["url"]
+                )
+                google_chat_json = google_chat_json.replace(
+                    "#appName#", result["appName"]
+                )
+            logging.info(google_chat_json)
+            send_card_message(
+                google_chat_webhook_url=google_chat_webhook_url,
+                message_json=google_chat_json,
+            )
+    else:
+        logging.info("Fichier vide, pas de notes à traiter")
 
 def get_star_rating(rating):
     result = ""
@@ -228,11 +274,16 @@ if __name__ == "__main__":
     )
     options.add_option("-r", "--review", type="str", default="false", help="thread id")
     options.add_option("-t", "--title", type="str", default="Livraison", help="title")
+    options.add_option("-c", "--crash", type="str", default="false", help="thread id")
 
     opts, args = options.parse_args()
     if opts.delivery != "true":
         if opts.review != "false" and opts.file != "":
             send_review_message(
+                google_chat_webhook_url=opts.webhook, filename=opts.file
+            )
+        elif opts.crash != "false" and opts.file != "":
+            send_crash_list_message(
                 google_chat_webhook_url=opts.webhook, filename=opts.file
             )
         else:

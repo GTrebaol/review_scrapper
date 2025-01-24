@@ -1,0 +1,127 @@
+{
+  "cardsV2": [
+    {
+      "cardId": "crash_list",
+      "card": {
+        "header": {
+          "title": "Top 3 Crash #appName#",
+          "imageType": "CIRCLE"
+        },
+        "sections": [
+          {
+            "widgets": [
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "BOOKMARK"
+                  },
+                  "topLabel": "Crash",
+                  "text": "#crash-0#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "CLOCK"
+                  },
+                  "topLabel": "Première occurence",
+                  "text": "#earliest-0#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "CONFIRMATION_NUMBER_ICON"
+                  },
+                  "topLabel": "Nombre occurences",
+                  "text": "#occurences-0#"
+                }
+              }
+            ]
+          },
+          {
+            "widgets": [
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "EVENT_SEAT"
+                  },
+                  "topLabel": "Crash",
+                  "text": "#crash-1#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "FLIGHT_DEPARTURE"
+                  },
+                  "topLabel": "Première occurence",
+                  "text": "#earliest-1#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "CONFIRMATION_NUMBER_ICON"
+                  },
+                  "topLabel": "Nombre occurences",
+                  "text": "#occurences-1#"
+                }
+              }
+            ]
+          },
+          {
+            "widgets": [
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "EVENT_SEAT"
+                  },
+                  "topLabel": "Crash",
+                  "text": "#crash-2#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "FLIGHT_DEPARTURE"
+                  },
+                  "topLabel": "Première occurence",
+                  "text": "#earliest-2#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "CONFIRMATION_NUMBER_ICON"
+                  },
+                  "topLabel": "Nombre occurences",
+                  "text": "#occurences-2#"
+                }
+              }
+            ]
+          },
+          {
+            "widgets": [
+              {
+                "buttonList": {
+                  "buttons": [
+                    {
+                      "text": "Lien Instana",
+                      "type": "FILLED",
+                      "onClick": {
+                        "openLink": {
+                          "url": "#url-crash#"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
