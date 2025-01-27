@@ -57,6 +57,7 @@ def create_review(reviews: List[Review], review_raw: dict):
         build_version="",
         phone="",
         title=review_raw["title"],
+        os_version=""
     )
     if not check_datetime_treshold(review):
         reviews.append(review)
