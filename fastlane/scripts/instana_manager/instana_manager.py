@@ -155,11 +155,10 @@ class InstanaManager:
             app (str): Instana mobile app name
             timeframe (str): windows size of the data wanted in ms (one hour = 3600000)
         """
-        match (data_type):
-            case "crash_list":
-                self.process_data_crash_list(app, timeframe)
-            case _:
-                logging.info("Data type inconnu (crash_list")
+        if data_type == "crash_list":
+            self.process_data_crash_list(app, timeframe)
+        else:
+            logging.info("Data type inconnu (crash_list")
 
     def process_data_crash_list(self,
                                 app_name,

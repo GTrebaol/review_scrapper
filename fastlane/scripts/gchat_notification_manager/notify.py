@@ -67,7 +67,6 @@ def send_card_message(google_chat_webhook_url: str, message_json: str):
     message_headers = {"Content-Type": "application/json"}
     session = requests.session()
     session.proxies.update(proxy_settings)
-    logging.info(message_json)
     try:
         response = session.post(
             url=google_chat_webhook_url,
@@ -94,7 +93,6 @@ def send_review_message(google_chat_webhook_url: str, filename: str):
     if not is_file_empty(filename):
         with open(filename) as file:
             result = json.loads(file.read())
-            logging.info(result)
             if not result or "reviews" not in result:  # Vérifie si le JSON est vide
                 logging.info("Fichier vide, pas de notes à traiter")
                 return True
@@ -151,7 +149,6 @@ def send_crash_list_message(google_chat_webhook_url: str, filename: str):
     if not is_file_empty(filename):
         with open(filename) as file:
             result = json.loads(file.read())
-            logging.info(result)
             if not result :  # Vérifie si le JSON est vide
                 logging.info("Fichier vide, pas de crash à traiter")
                 return True
@@ -176,7 +173,6 @@ def send_crash_list_message(google_chat_webhook_url: str, filename: str):
                 google_chat_json = google_chat_json.replace(
                     "#appName#", result["appName"]
                 )
-            logging.info(google_chat_json)
             send_card_message(
                 google_chat_webhook_url=google_chat_webhook_url,
                 message_json=google_chat_json,
