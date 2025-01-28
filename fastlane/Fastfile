@@ -62,3 +62,7 @@ lane :write_sonarqube_result_in_mr do |params|
     project_name = params[:project_name]
     sonarqube_decoration(project_name: project_name)
 end
+
+lane :download_bitrise_artifacts_from_previous_build do
+    download_bitrise_artifacts()
+end
