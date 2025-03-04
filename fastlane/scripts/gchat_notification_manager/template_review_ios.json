@@ -12,9 +12,16 @@
         "sections": [
           {
             "header": "#title#",
-            "collapsible": true,
-            "uncollapsibleWidgetsCount": 1,
             "widgets": [
+              {
+                "decoratedText": {
+                  "icon": {
+                    "knownIcon": "CLOCK"
+                  },
+                  "topLabel": "Date",
+                  "text": "#datetime#"
+                }
+              },
               {
                 "textParagraph": {
                   "text": "#content#"

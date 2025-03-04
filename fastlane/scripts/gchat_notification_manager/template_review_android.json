@@ -15,6 +15,15 @@
               {
                 "decoratedText": {
                   "icon": {
+                    "knownIcon": "CLOCK"
+                  },
+                  "topLabel": "Date",
+                  "text": "#datetime#"
+                }
+              },
+              {
+                "decoratedText": {
+                  "icon": {
                     "knownIcon": "EVENT_SEAT"
                   },
                   "topLabel": "Version Android",
@@ -27,16 +36,7 @@
                     "knownIcon": "FLIGHT_DEPARTURE"
                   },
                   "topLabel": "Version App",
-                  "text": "#version#"
-                }
-              },
-              {
-                "decoratedText": {
-                  "icon": {
-                    "knownIcon": "CONFIRMATION_NUMBER_ICON"
-                  },
-                  "topLabel": "Version Code",
-                  "text": "#version_code#"
+                  "text": "#version# - #version_code#"
                 }
               },
               {

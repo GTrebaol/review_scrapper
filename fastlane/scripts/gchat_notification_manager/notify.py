@@ -124,6 +124,9 @@ def send_review_message(google_chat_webhook_url: str, filename: str):
                     google_chat_json = google_chat_json.replace(
                         "#phone#", review["phone"]
                     )
+                    google_chat_json = google_chat_json.replace(
+                        "#datetime#", review["datetime"]
+                    )
                     google_chat_json = google_chat_json.replace("#threadId#", thread_id)
                     google_chat_json = google_chat_json.replace(
                         "#os_version#", review["os_version"]
