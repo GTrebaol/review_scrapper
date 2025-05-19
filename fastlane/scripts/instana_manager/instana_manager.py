@@ -288,7 +288,7 @@ class IosInstanaManager(InstanaManager):
                 "-q",
                 f"{working_dir}/{dsyms_name}",
                 "-d",
-                f"{working_dir}/{dsyms_name}",
+                f"{working_dir}/unzipped",
             ]
         )
         subprocess.run(
@@ -296,7 +296,7 @@ class IosInstanaManager(InstanaManager):
                 "tar",
                 "-czf",
                 f"{working_dir}/{dsyms_name}.tgz",
-                f"{working_dir}/{dsyms_name}",
+                f"{working_dir}/unzipped",
             ]
         )
 
