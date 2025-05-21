@@ -65,9 +65,6 @@ lane :write_sonarqube_result_in_mr do |params|
     sonarqube_decoration(project_name: project_name)
 end
 
-lane :download_bitrise_artifacts_from_previous_build do
-    download_bitrise_artifacts()
-end
 
 lane :protect_gitlab_tag do |params|
     project_id = params[:project_id]
