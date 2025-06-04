@@ -3,6 +3,7 @@
 import logging
 import re
 from typing import List
+import os
 
 import requests
 
@@ -32,7 +33,8 @@ def get_reviews() -> List[Review]:
                 logging.info("No reviews")
             else:
                 for item in response_reviews["data"]:
-                    create_review(reviews=reviews, review_raw=item["attributes"])
+                    check_and_save_review(item, reviews)
+
                 finished = len(reviews) < config.REVIEWS_FETCH_QUANTITY
                 logging.info(f"Fetched and kept {len(reviews)} reviews.")
                 logging.info(
@@ -59,5 +61,23 @@ def create_review(reviews: List[Review], review_raw: dict):
         title=review_raw["title"],
         os_version=""
     )
-    if not check_datetime_treshold(review):
-        reviews.append(review)
+    reviews.append(review)
+
+def check_and_save_review(review_raw: dict, reviews: List[Review]):
+    id = review_raw["id"]
+    file_path = "fastlane/scripts/review_scrapper/saved_reviews/" + config.REPO_PACKAGE_NAME + ".txt"
+    file_content = ""
+    if not check_datetime_treshold("iOs", create_datetime_from_iso8601(review_raw['attributes']["createdDate"])):
+
+        if not os.path.isfile(file_path):
+            with open(file_path, "w") as file:
+                logging.info("Creating file if it doesn't exist")
+
+        with open(file_path, "r") as file:
+            file_content = file.read()
+
+        if id not in file_content:
+            string = (f"{{id:{id};date:{review_raw['attributes']['createdDate']}}}\n")
+            with open(file_path, "a") as file:
+                file.write(string)
+                create_review(reviews, review_raw["attributes"])

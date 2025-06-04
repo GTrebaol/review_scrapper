@@ -18,13 +18,13 @@ def build_json_result(reviews: List[Review]) -> str:
     return message
 
 
-def check_datetime_treshold(review: Review) -> bool:
+def check_datetime_treshold(os, datetime) -> bool:
     delta = (
         config.TIMEDELTA_HOURS_IOS
-        if review.os == "iOs"
+        if os == "iOs"
         else config.TIMEDELTA_HOURS_ANDROID
     )
-    return get_time_treshold(delta) > review.datetime
+    return get_time_treshold(delta) > datetime
 
 
 def get_time_treshold(delta: int):
